@@ -8,3 +8,9 @@ services:
       POSTGRES_PASSWORD: ${DB_PASS}
     ports:
       - "5432:${PORT}"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+    driver: local 
