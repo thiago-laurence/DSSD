@@ -1,8 +1,8 @@
 from django import models
 
 class MaterialRecoleccion(models.Model):
-    material = models.ForeignKey('Material', on_delete=models.CASCADE)
-    recoleccion = models.ForeignKey('Recoleccion', on_delete=models.CASCADE)
+    material = models.ForeignKey('Material')
+    recoleccion = models.ForeignKey('Recoleccion')
     cantidad = models.FloatField()
     
     class Meta:
