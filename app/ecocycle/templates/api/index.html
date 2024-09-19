@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <div class="container mx-auto">
+
+    <p class="text-center">
+      HOLA.
+    </p>
+    <figure class="my-4 pt-10">
+      <img src="{% static 'img/logo.jpeg' %}" alt="Ecocycle" class="rounded-full w-28 h-28 mx-auto" />
+    </figure>
+
+    <h2 class="text-center">Procesos</h2>
+    <ul class="list-disc mx-auto">
+      {% if procesos %}
+        {% for proceso in procesos %}
+          <li>{{ proceso.deploymentDate }} - {{ proceso.displayName }} - {{ proceso.name }}</li>
+        {% endfor %}
+      {% else %}
+        <li>No se encontraron procesos.</li>
+      {% endif %}
+    </ul>
+
+  </div>
+{% endblock content %}
