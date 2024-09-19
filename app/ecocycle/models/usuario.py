@@ -1,11 +1,10 @@
 from django.contrib.auth.hashers import make_password
 from django.db import models
+from .managers.user import CustomUser
 
-class Usuario(models.Model):
+class Usuario(CustomUser):
     nombre = models.CharField(max_length=50)
     apellido = models.CharField(max_length=50)
-    email = models.EmailField(unique=True)
-    contraseña = models.CharField(max_length=255)
 
     class Meta:
         abstract = True
@@ -15,5 +14,5 @@ class Usuario(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.contraseña = make_password(self.contraseña)
+            self.password = make_password(self.password)
         return super().save(*args, **kwargs)
