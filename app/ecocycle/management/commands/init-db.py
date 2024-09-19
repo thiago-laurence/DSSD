@@ -28,7 +28,7 @@ class Command(BaseCommand):
 
     def create_example_data(self):
         # Recolectores
-        r1 = Recolector.objects.create(nombre='John', apellido='Doe', email='johndoe@example.com', contraseña='123')
+        r1 = Recolector.objects.create(nombre='John', apellido='Doe', email='johndoe@example.com', password='123')
 
         # Puntos
         p1 = Punto.objects.create(nombre='Punto 1', direccion='Calle 1', contraseña='123')
