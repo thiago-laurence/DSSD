@@ -9,4 +9,6 @@ urlpatterns = [
 
     # Recolector urls
     path("recolector/", include("ecocycle.urls_.recolector_urls")),
+
+    path("api/", include("ecocycle.urls_.api_urls")),
 ]
