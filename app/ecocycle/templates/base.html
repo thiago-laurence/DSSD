@@ -7,13 +7,16 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ecocycle</title>
+    <title>
+        {% block title %}
+            Ecocycle
+        {% endblock title %}
+    </title>
     <link rel="stylesheet" href="{% static 'src/styles.css' %}">
 </head>
 
 <body>
-    
-    <div class="container mx-auto grass_bg floating">
+    <div class="w-full mx-auto">
         <div>
             {% include 'navbar.html' %}
         </div>
@@ -25,6 +28,9 @@
             {% include 'footer.html' %}
         </div>
     </div>
+
+    {% block scripts %}
+    {% endblock scripts %}
 </body>
 
 </html>
