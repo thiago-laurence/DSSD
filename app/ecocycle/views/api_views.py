@@ -5,7 +5,7 @@ from django.shortcuts import render
 
 def index(request):
     obj = obtener_procesos(request)
-    return render(request, 'api/index.html')
+    return render(request, 'api/index.html', {'obj': obj})
 
 def login_bonita(request):
     url = "http://localhost:8080/bonita/loginservice"
@@ -48,7 +48,8 @@ def obtener_procesos(request):
     if tokens:
         headers = {
             "Cookie": f"JSESSIONID={tokens['JSESSIONID']}",
-            "X-Bonita-API-Token": tokens['X-Bonita-API-Token']
+            "X-Bonita-API-Token": tokens['X-Bonita-API-Token'],
+            "Content-Type": "application/json"
         }
         url = "http://localhost:8080/bonita/API/bpm/process?f=name=Proceso%20de%20recolecci%C3%B3n&p=0&c=10" # Le pego a la API de Bonita que busca el ID del proceso
         response = requests.get(url, headers=headers)
@@ -58,28 +59,33 @@ def obtener_procesos(request):
             url = f"http://localhost:8080/bonita/API/bpm/process/{process_id}/instantiation" # Le pego a la API de Bonita que instancia el proceso
             response = requests.post(url, headers=headers)
             
-            task_id = response.json()['caseId'] 
+            task_id = response.json()['caseId'] # Este es el id de la instancia del proceso 
             
             ok = True
-            ok_value = {"type": "java.lang.Boolean", "value": True} 
+            ok_value = {"type": "java.lang.String", "value": "Verdadero"} 
             url = f"http://localhost:8080/bonita/API/bpm/caseVariable/{task_id}/ok" # Le pego a la API de Bonita que setea la variable de la tarea
             response = requests.put(url, headers=headers, data=json.dumps(ok_value))
-            print(response)
 
-            url = f"http://localhost:8080/bonita/API/bpm/caseVariable?p=0&c=10&f=case_id={task_id}" 
+
+            url = f"http://localhost:8080/bonita/API/bpm/task?p=0&c=10&f=caseId={task_id}" # Le pego a la API de Bonita que obtiene la tarea
             response = requests.get(url, headers=headers)
-            print(response.json())
+            task_id = response.json()[0]['id'] # Este es el id de la tarea (creo)
+            
+            url = f"http://localhost:8080/bonita/API/identity/user?p=0&c=10&f=userName=walter.bates" # Le pego a la API de Bonita que obtiene el usuario
+            response_user = requests.get(url, headers=headers)
 
-            url = f"http://localhost:8080/bonita/API/bpm/task/{task_id}" # Le pego a la API de Bonita que obtiene la tarea
-            response = requests.get(url, headers=headers)
-            task = response.json()
+            value = {
+                "assigned_id": f"{response_user.json()[0]['id']}",
+                "state": "new_state"}
+            url = f"http://localhost:8080/bonita/API/bpm/humanTask/{response_user.json()[0]['id']}" # Le pego a la API de Bonita que ejecuta la tarea
+            response = requests.put(url, headers=headers, data=json.dumps(value))
 
-            # en el video tmb asigna la tarea a un usuario, pero no lo hago aca
+            
 
-            url = f"http://localhost:8080/bonita/API/bpm/userTask/{task['id']}/execution"
+            url = f"http://localhost:8080/bonita/API/bpm/userTask/{task_id}/execution"
             response = requests.post(url, headers=headers)
 
-            return response.json()
+            # return response.json()
         else:
             print(f"Error al obtener procesos: {response.status_code}")
             return None
