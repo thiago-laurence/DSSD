@@ -59,27 +59,27 @@ def obtener_procesos(request):
             url = f"http://localhost:8080/bonita/API/bpm/process/{process_id}/instantiation" # Le pego a la API de Bonita que instancia el proceso
             response = requests.post(url, headers=headers)
             
-            task_id = response.json()['caseId'] # Este es el id de la instancia del proceso 
+            case_id = response.json()['caseId'] # Este es el id de la instancia del proceso (un case)
             
             ok = True
             ok_value = {"type": "java.lang.String", "value": "Verdadero"} 
-            url = f"http://localhost:8080/bonita/API/bpm/caseVariable/{task_id}/ok" # Le pego a la API de Bonita que setea la variable de la tarea
+            url = f"http://localhost:8080/bonita/API/bpm/caseVariable/{case_id}/ok" # Le pego a la API de Bonita que setea la variable de instancia del proceso (setea la variable del case)
             response = requests.put(url, headers=headers, data=json.dumps(ok_value))
 
 
-            url = f"http://localhost:8080/bonita/API/bpm/task?p=0&c=10&f=caseId={task_id}" # Le pego a la API de Bonita que obtiene la tarea
+            url = f"http://localhost:8080/bonita/API/bpm/task?p=0&c=10&f=caseId={case_id}" # Le pego a la API de Bonita que obtiene la tarea (task)
             response = requests.get(url, headers=headers)
-            task_id = response.json()[0]['id'] # Este es el id de la tarea (creo)
+            task_id = response.json()[0]['id'] # Este es el id de la tarea/task (creo)
+
             
             url = f"http://localhost:8080/bonita/API/identity/user?p=0&c=10&f=userName=walter.bates" # Le pego a la API de Bonita que obtiene el usuario
             response_user = requests.get(url, headers=headers)
 
             value = {
-                "assigned_id": f"{response_user.json()[0]['id']}",
-                "state": "new_state"}
-            url = f"http://localhost:8080/bonita/API/bpm/humanTask/{response_user.json()[0]['id']}" # Le pego a la API de Bonita que ejecuta la tarea
+                "assigned_id": f"{response_user.json()[0]['id']}", # Este es el id del usuario
+                "state": "ready"}
+            url = f"http://localhost:8080/bonita/API/bpm/userTask/{task_id}" # Le pego a la API de Bonita que le asigna la task al usuario
             response = requests.put(url, headers=headers, data=json.dumps(value))
-
             
 
             url = f"http://localhost:8080/bonita/API/bpm/userTask/{task_id}/execution"
