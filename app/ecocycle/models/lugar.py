@@ -1,10 +1,10 @@
 from django.contrib.auth.hashers import make_password
 from django.db import models
+from .managers.user import CustomUser
 
-class Lugar(models.Model):
+class Lugar(CustomUser):
     nombre = models.CharField(max_length=50, unique=True)
     direccion = models.CharField(max_length=100)
-    contraseña = models.CharField(max_length=255)
 
     class Meta:
         abstract = True
@@ -12,7 +12,9 @@ class Lugar(models.Model):
     def __str__(self) -> str:
         return self.nombre
     
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.contraseña = make_password(self.contraseña)
-        return super().save(*args, **kwargs)
+    def to_dict(self):
+        dict = super().to_dict()
+        dict['nombre'] = self.nombre
+        dict['direccion'] = self.direccion
+        
+        return dict

@@ -169,3 +169,20 @@ SESSION_COOKIE_AGE = 1800 # 30 minutos
 
 # Puedes también usar SESSION_SAVE_EVERY_REQUEST si deseas actualizar la expiración en cada solicitud.
 # SESSION_SAVE_EVERY_REQUEST = True
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'loggers': {
+#         'django.db.backends': {
+#             'level': 'DEBUG',
+#             'handlers': ['console'],
+#         },
+#     },
+# }

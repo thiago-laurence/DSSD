@@ -31,7 +31,7 @@ class Command(BaseCommand):
         r1 = Recolector.objects.create(nombre='John', apellido='Doe', email='johndoe@example.com', password='123')
 
         # Puntos
-        p1 = Punto.objects.create(nombre='Punto 1', direccion='Calle 1', contraseña='123')
+        p1 = Punto.objects.create(nombre='Punto 1', direccion='Calle 1', password='123', email='punto1@example.com')
 
         # Asignacion de Puntos a Recolectores
         r1.puntos.add(p1)
