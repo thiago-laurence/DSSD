@@ -7,7 +7,7 @@ from ecocycle.helpers import auth as auth_helper
 @api_view(['GET'])
 def index(request):
     if 'user' in request.session:
-        return redirect(f'{request.session['user']['subclase']}:index')
+        return redirect(f"{request.session['user']['subclase']}:index")
     
     return render(request, 'login/index.html')
 
