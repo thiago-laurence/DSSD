@@ -13,17 +13,21 @@
                         <td class="px-4 py-2 font-semibold">Material</td>
                         <td class="px-4 py-2">
                             <input type="text" name="material" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                            <!--{{ form.material}}-->
                         </td>
                     </tr>
                     <tr>
                         <td class="px-4 py-2 font-semibold">Cantidad</td>
                         <td class="px-4 py-2">
                             <input type="floatformat" name="material" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                            <!--{{ form.cantidad}}-->
                         </td>
                     </tr>
                 </table>
+                <div class="flex justify-center mb-4">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" name="finalize_process" class="form-checkbox">
+                        <span class="ml-2">Finalizar proceso</span>
+                    </label>
+                </div>
                 <div class="flex justify-center">
                     <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded-full center">
                         Enviar
