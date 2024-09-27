@@ -14,7 +14,7 @@ class Usuario(CustomUser):
     
     def save(self, *args, **kwargs):
         if not self.username:
-            self.username = f"{self.nombre}.{self.apellido}"
+            self.username = f"{self.nombre}.{self.apellido}".lower()
         super().save(*args, **kwargs)
     
     def to_dict(self):

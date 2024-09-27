@@ -30,9 +30,9 @@ class Command(BaseCommand):
         # Recolectores
         r1 = Recolector.objects.create(nombre='John', apellido='Doe', email='johndoe@example.com', password='123')
         # Bonitos
-        r2 = Recolector.objects.create(nombre='Walter', apellido='Bates', email='walter.bates@example.com', password='123')
-        r3 = Recolector.objects.create(nombre='Jan', apellido='Fisher', email='jan.fisher@example.com', password='123')
-        r4 = Recolector.objects.create(nombre='William', apellido='Jobs', email='william.jobs@example.com', password='123')
+        r2 = Recolector.objects.create(nombre='Walter', apellido='Bates', email='walter.bates@example.com', password='bpm')
+        r3 = Recolector.objects.create(nombre='Jan', apellido='Fisher', email='jan.fisher@example.com', password='bpm')
+        r4 = Recolector.objects.create(nombre='William', apellido='Jobs', email='william.jobs@example.com', password='bpm')
 
         # Puntos
         p1 = Punto.objects.create(nombre='Punto 1', direccion='Calle 1', password='123', email='punto1@example.com')
