@@ -1,7 +1,7 @@
 import json
 import requests
-from django.http import JsonResponse
 from django.shortcuts import render
+from os import environ as env
 
 def index(request):
     obj = obtener_procesos(request)
@@ -9,11 +9,13 @@ def index(request):
 
 def login_bonita(request):
     url = "http://localhost:8080/bonita/loginservice"
-
+    username = request.session['user']['email'].split('@')[0]
+    password = env.get("BONITA_PASS")
+    
     payload = {
-        "username": "walter.bates",
-        "password": "bpm",
-        "redirect": "false"
+        "username": username,
+        "password": password,
+        "redirect": False
     }
 
     response = requests.post(url, data=payload)
