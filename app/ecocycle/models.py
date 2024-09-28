@@ -5,3 +5,6 @@ from models.centro import Centro
 from models.lugar import Lugar
 from models.punto import Punto
 from models.deposito import Deposito
+from models.material import Material
+from models.recoleccion import Recoleccion
+from app.ecocycle.models.recoleccion_material import RecoleccionMaterial

@@ -24,7 +24,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.password = make_password(self.password)
+            if self.__class__.__name__ != 'CustomUser':
+                self.password = make_password(self.password)
             self.subclase = self.__class__.__name__.lower()
         return super().save(*args, **kwargs)
     
