@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Ecocycle - Centro de acopio
+{% endblock title %}
+
+{% block content %}
+    <div class="hero bg-base-200">
+        <div class="hero-content text-center">
+            <div class="max-w-md">
+                <h1 class="text-4xl font-bold">"{{ request.session.user.nombre }}"</h1>
+                <p class="py-6">
+                    Validá las recolecciones recibidas por los recolectores.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-base-100 sm:max-w-2xl shadow-2xl sm:mx-auto mx-4 my-10">
+        <div class="card-body">
+            <h2 class="card-title">Buscador de recoleccion</h2>
+            <p>
+                Ingrese el número de la recolección para su validación.
+            </p>
+            <form action="{% url 'centro:index' %}" method="GET"> 
+                <label class="input border-primary flex items-center gap-2 my-4 transition duration-300">
+                    <input type="number" autocomplete="off" name="id_recoleccion" value="{{ context.id_recoleccion }}" class="grow" placeholder="Buscar" />
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 16 16"
+                        fill="currentColor"
+                        class="h-4 w-4 opacity-70">
+                        <path
+                        fill-rule="evenodd"
+                        d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                        clip-rule="evenodd" />
+                    </svg>
+                </label>
+                <div class="card-actions justify-end">
+                    <button type="submit" class="btn btn-primary">Ingresar</button>
+                </div>
+            </form>
+            {% if context.error %}
+                <div role="alert" class="alert alert-error">
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6 shrink-0 stroke-current"
+                    fill="none"
+                    viewBox="0 0 24 24">
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>El número de recolección ingresado no se encuentra registrado.</span>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- {# <div class="card bg-base-100 sm:max-w-2xl shadow-2xl sm:mx-auto mx-4 my-10">
+        <div class="card-body">
+            <h2 class="card-title">Buscador de recolectores</h2>
+            <p>
+                Ingrese el correo electronico del recolector para validar la recoleccion.
+            </p>
+            <form action="{% url 'centro:index' %}" method="GET"> 
+                <label class="input border-primary flex items-center gap-2 my-4 transition duration-300">
+                    <input type="text" autocomplete="off" name="query" value="{{ context.query }}" class="grow" placeholder="Buscar" />
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 16 16"
+                        fill="currentColor"
+                        class="h-4 w-4 opacity-70">
+                        <path
+                        fill-rule="evenodd"
+                        d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                        clip-rule="evenodd" />
+                    </svg>
+                </label>
+                <div class="card-actions justify-end">
+                    <button type="submit" class="btn btn-primary">Ingresar</button>
+                </div>
+            </form>
+                {% if context.user_list %}
+                    <div class="overflow-x-auto">
+                        <table class="table">
+                        <thead>
+                            <tr>
+                            <th></th>
+                            <th>Email</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in context.user_list %}
+                                <tr class="hover cursor-pointer" onclick="document.querySelector('input[name=query]').value='{{ user.email }}'">
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.nombre }}</td>
+                                    <td>{{ user.apellido }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        </table>
+                    </div>
+                    {% include 'components/paginator.html' with query=context.query page=context.page page_range=context.page_range %}
+                {% else %}
+                    <div role="alert" class="alert alert-error">
+                        <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-6 w-6 shrink-0 stroke-current"
+                        fill="none"
+                        viewBox="0 0 24 24">
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>No existen resultados coincidentes con la busqueda</span>
+                    </div>
+                {% endif %}
+        </div>
+    </div> #} -->
+{% endblock content %}

@@ -19,7 +19,7 @@
             </div>
         </div>
     </div>
-    <div class="card bg-base-200 sm:max-w-md shadow-2xl sm:mx-auto mx-4">
+    <div class="card bg-base-200 sm:max-w-md shadow-2xl sm:mx-auto mx-4 mb-16">
         <div class="card-body items-center text-center">
             <form action="{% url 'login:auth' %}" method="POST" id="form-login" class="w-full my-4" onsubmit="showLoadingSpinner()">
                 {% csrf_token %}
@@ -49,9 +49,8 @@
                         <input type="password" name="password" placeholder="Ingrese su contraseña" class="input input-bordered w-full pl-10 focus:outline-none focus:border-primary transition duration-300" />
                     </div>
                 </label>
-                <span id="loading-spinner" class="loading loading-spinner text-primary hidden"></span>
                 {% if failed %}
-                    <div role="alert" class="alert alert-error gap-0 sm:gap-4" id="error-message">
+                    <div role="alert" class="alert alert-error p-3 gap-0 sm:gap-4" id="error-message">
                         <svg
                         xmlns="http://www.w3.org/2000/svg"
                         class="h-6 w-6 shrink-0 stroke-current"
@@ -68,7 +67,10 @@
                 {% endif %}
             </form>
             <div class="card-actions w-full">
-                <button type="submit" class="btn btn-primary w-full" form="form-login" id="submit-button">Ingresar</button>
+                <button type="submit" class="btn btn-primary w-full" form="form-login" id="submit-button">
+                    Ingresar
+                    <span id="loading-spinner" class="loading loading-spinner text-white hidden"></span>
+                </button>
             </div>
         </div>
     </div>
@@ -77,20 +79,11 @@
 {% endblock content %}
 
 {% block scripts %}
-<script>
-    function showLoadingSpinner() {
-        document.getElementById('loading-spinner').classList.remove('hidden');
-        document.getElementById('submit-button').disabled = true;
-    }
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-    const errorMessage = document.getElementById('error-message');
-    if (errorMessage) {
-        setTimeout(() => {
-        errorMessage.style.display = 'none';
-        }, 3000);
-    }
-    });
-</script>
+    {{ block.super }}
+    <script>
+        function showLoadingSpinner() {
+            document.getElementById('loading-spinner').classList.remove('hidden');
+            document.getElementById('submit-button').disabled = true;
+        }
+    </script>
 {% endblock scripts %}
