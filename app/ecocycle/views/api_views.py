@@ -46,6 +46,9 @@ def get_bonita_tokens(request):
 
 def obtener_procesos(request):
     tokens = get_bonita_tokens(request)
+    username = request.session['user']['email'].split('@')[0]
+    material_tipo = request.POST.get("material_tipo")
+    material_cantidad = request.POST.get("material_cantidad")
 
     if tokens:
         headers = {
@@ -59,11 +62,10 @@ def obtener_procesos(request):
         
         if response.status_code == 200:
             # Obtengo el id del proceso
-            process_id = response.json()[0]['id'] 
+            process_id = response.json()[0]['id']
             # Le pego a la API de Bonita que instancia el proceso
             url = f"http://localhost:8080/bonita/API/bpm/process/{process_id}/instantiation" 
             response = requests.post(url, headers=headers)
-            print(response)
             
             # Este es el id de la instancia del proceso (un case)
             case_id = response.json()['caseId'] 
@@ -75,6 +77,15 @@ def obtener_procesos(request):
             url = f"http://localhost:8080/bonita/API/bpm/caseVariable/{case_id}/ok" 
             response = requests.put(url, headers=headers, data=json.dumps(ok_value))
             print(response)
+            #Setea las variables del material
+            material_tipo_value = {"type": "java.lang.String", "value": material_tipo} 
+            url = f"http://localhost:8080/bonita/API/bpm/caseVariable/{case_id}/material_tipo"
+            response = requests.put(url, headers=headers, data=json.dumps(material_tipo_value))
+            print(response)
+            material_cantidado_value = {"type": "java.lang.String", "value": material_cantidad} 
+            url = f"http://localhost:8080/bonita/API/bpm/caseVariable/{case_id}/material_cantidad" 
+            response = requests.put(url, headers=headers, data=json.dumps(material_cantidado_value))
+            print(response)
 
             # Le pego a la API de Bonita que obtiene la tarea (task)
             url = f"http://localhost:8080/bonita/API/bpm/task?p=0&c=10&f=caseId={case_id}" 
@@ -83,7 +94,7 @@ def obtener_procesos(request):
             task_id = response.json()[0]['id'] # Este es el id de la tarea/task (creo)
 
             # Le pego a la API de Bonita que obtiene el usuario
-            url = f"http://localhost:8080/bonita/API/identity/user?p=0&c=10&f=userName=walter.bates" 
+            url = f"http://localhost:8080/bonita/API/identity/user?p=0&c=10&f=userName={username}" 
             response_user = requests.get(url, headers=headers)
             print("requests.get(url, headers=headers)")
             print(response_user)
