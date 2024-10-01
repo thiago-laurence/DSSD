@@ -18,7 +18,11 @@
 <body class="flex flex-col min-h-screen">
     <div class="w-full mx-auto grass_bg floating flex-grow">
         <div>
-            {% include 'navbar.html' %}
+            {% if request.session.user %}
+                {% include 'components/navbar-'|add:request.session.user.subclase|add:'.html' %}
+            {% else %}
+                {% include 'components/navbar.html' %}
+            {% endif %}
         </div>
 
         {% block content %}
