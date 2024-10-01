@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect
+from . import api_views
 from ..forms import RecoleccionForm
 
-def materials_new(request):
-    #if request.method == 'POST':
-    #    form = RecoleccionForm(request.POST)
-    #    if form.is_valid():
-    #        form.save()
-    #        return redirect('/')
-    #else:
-    #    form = RecoleccionForm()
-    return render(request, 'materials/materials_new.html')#, {'form': form})
+def index(request):
+    return render(request, 'materials/index.html')
+
+def send(request):
+    api_views.obtener_procesos(request)
+    if request.POST.get('finalize_process') != 'on':
+        return render(request, 'materials/index.html')
+    else:
+        return redirect('/')
+    
