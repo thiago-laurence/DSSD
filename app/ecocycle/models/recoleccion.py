@@ -6,6 +6,8 @@ class Recoleccion(models.Model):
     semana = models.DateField()
     pago = models.DecimalField(max_digits=10, decimal_places=2)
     observaciones = models.TextField(max_length=250)
+    aprobada = models.BooleanField(default=False)
+    notificacion = models.BooleanField(default=False)
     
     class Meta:
         db_table = 'recoleccion'
@@ -26,4 +28,21 @@ class Recoleccion(models.Model):
             'semana': self.semana,
             'pago': self.pago,
             'observaciones': self.observaciones,
+            'aprobada': self.aprobada
+        }
+    
+    def to_dict_info(self):
+        return {
+            'id': self.id,
+            'materiales': [
+                {
+                    'material': material.nombre,
+                    'cantidad': material.recoleccionmaterial_set.get(recoleccion=self).cantidad
+                } for material in self.materiales.all()
+            ],
+            'semana': self.semana,
+            'pago': self.pago,
+            'observaciones': self.observaciones,
+            'aprobada': self.aprobada,
+            'notificacion': self.notificacion
         }

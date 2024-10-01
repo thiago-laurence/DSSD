@@ -7,4 +7,5 @@ from models.punto import Punto
 from models.deposito import Deposito
 from models.material import Material
 from models.recoleccion import Recoleccion
-from app.ecocycle.models.recoleccion_material import RecoleccionMaterial
+from models.recoleccion_material import RecoleccionMaterial
+from ecocycle.models.centro_material import CentroMaterial

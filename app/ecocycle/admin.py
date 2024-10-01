@@ -8,6 +8,7 @@ from ecocycle.models.centro import Centro
 from ecocycle.models.material import Material
 from ecocycle.models.recoleccion import Recoleccion
 from ecocycle.models.recoleccion_material import RecoleccionMaterial
+from ecocycle.models.centro_material import CentroMaterial
 
 admin.site.register(Recolector)
 admin.site.register(Administrador)
@@ -17,3 +18,4 @@ admin.site.register(Centro)
 admin.site.register(Material)
 admin.site.register(Recoleccion)
 admin.site.register(RecoleccionMaterial)
+admin.site.register(CentroMaterial)
