@@ -22,6 +22,13 @@ def index(request):
         
     return render(request, 'centro/index.html', { 'context': context })
 
+@api_view(['GET'])
+def view_perfil(request, id_centro):
+    if 'user' not in request.session:
+        return redirect('login:index')
+    
+    return render(request, 'centro/perfil.html')
+
 # @api_view(['GET'])
 # def index(request):
 #     if 'user' not in request.session:

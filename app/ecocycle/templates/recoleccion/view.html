@@ -16,6 +16,19 @@
                         Numero de recoleccion
                         <div class="badge badge-primary-content">{{ context.recoleccion.id }}</div>
                     </button>
+                    {% if context.recoleccion.aprobada %}
+                        <button type="button" class="btn btn-sm btn-success mb-2 lg:mb-0">
+                            <div class="badge badge-primary-content">
+                                Aprobada
+                            </div>
+                        </button>
+                    {% else %}
+                        <button type="button" class="btn btn-sm btn-warning mb-2 lg:mb-0">
+                            <div class="badge badge-primary-content">
+                                Pendiente
+                            </div>
+                        </button>
+                    {% endif %}
                     <button type="button" class="btn btn-sm btn-primary mb-2 lg:mb-0">
                         Recolector: 
                         <div class="badge badge-primary-content">{{ context.recoleccion.recolector.nombre }}</div>
@@ -25,6 +38,9 @@
                         <div class="badge badge-primary-content">{{ context.recoleccion.semana }}</div>
                     </button>
                 </div>
+                <p class="my-4">
+                    Materiales recolectados
+                </p>
                 {% for m in context.recoleccion.materiales %}    
                     <div class="flex flex-col sm:flex-row items-center gap-2 my-4">
                         <select class="select select-bordered w-full" name="material">
@@ -42,12 +58,17 @@
                     Pago:
                     <div class="badge badge-primary-content">${{ context.recoleccion.pago }}</div>
                 </button>
+                <p>
+                    Observaciones
+                </p>
                 <textarea name="observaciones" maxlength="250" 
                     required class="textarea textarea-bordered w-full mt-2" 
                     placeholder="Observaciones">{{ context.recoleccion.observaciones }}</textarea>
                 
                 <input type="hidden" name="id_recoleccion" value="{{ context.recoleccion.id }}">
-                <button type="submit" class="btn btn-primary w-full mt-4">Enviar</button>
+                {% if not context.recoleccion.aprobada %}
+                    <button type="submit" class="btn btn-primary w-full mt-4">Aprobar</button>
+                {% endif %}
                 <a href="{% url 'centro:index' %}">
                     <button type="button" class="btn btn-neutral mt-4">Volver</button>
                 </a>

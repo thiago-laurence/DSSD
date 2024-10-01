@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Ecocycle - Perfil
+{% endblock title %}
+
+{% block content %}
+    <div class="hero bg-base-200">
+        <div class="hero-content text-center">
+            <div class="max-w-md">
+                <h1 class="text-4xl font-bold">"{{ request.session.user.nombre }}"</h1>
+                <p class="py-6">
+                    Cantidad de materiales en stock
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="table">
+            <thead class="bg-primary">
+                <tr class="text-center">
+                    <th>
+                        <div class="badge badge-primary-content">
+                            Material
+                        </div>
+                    </th>
+                    <th>
+                        <div class="badge badge-primary-content">
+                            Cantidad
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                {% if request.session.user.materiales %}
+                    {% for m in request.session.user.materiales %}
+                        <tr class="hover:bg-primary-content">
+                            <td>{{ m.material }}</td>
+                            <td>
+                                <span class="badge badge-info">{{ m.cantidad }} Kg</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="2" class="text-sm">No hay materiales en stock</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}
