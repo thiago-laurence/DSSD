@@ -22,3 +22,5 @@ urlpatterns = [
     # API urls
     path("api/", include("ecocycle.urls_.api_urls")),
 ]
+
+handler404 = 'views.error_views.error_404'

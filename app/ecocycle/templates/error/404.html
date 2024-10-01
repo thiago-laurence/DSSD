@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <section class="flex items-center h-full p-16">
+        <div class="container flex flex-col items-center justify-center px-5 mx-auto my-8">
+            <div class="max-w-md text-center">
+                <h2 class="mb-8 font-extrabold text-9xl dark:text-gray-400">
+                    <span class="sr-only">Error</span>404
+                </h2>
+                <p class="text-2xl font-semibold md:text-3xl">
+                    Oops! La página no fue encontrada.
+                </p>
+                <p class="mt-4 mb-8 dark:text-gray-600">No te preocupes, aún puedes volver a la página inicial.</p>
+                <a href="{% url 'home:index' %}" class="btn btn-primary px-8 py-3 font-bold">
+                    Volver al inicio
+                </a>
+            </div>
+        </div>
+    </section>
+{% endblock content %}
