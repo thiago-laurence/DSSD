@@ -10,8 +10,9 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from datetime import date
 from django.http import HttpResponseBadRequest
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from urllib.parse import parse_qs
+from django.contrib import messages
 
 def index(request):
     if 'user' not in request.session:
@@ -40,27 +41,24 @@ def _obtener_recoleccion(request):
             material_nombre = body.get('material')
             cantidad = Decimal(body.get('cantidad'))
             
-            if not material_nombre or not cantidad:
-                #print("Material or quantity missing in the request")
+            if not material_nombre or not cantidad or material:
+                messages.error(request, "Error: Se debe indicar un material y una cantidad.")
                 return HttpResponseBadRequest("Material and quantity must be provided.")
 
             recolector_id = request.session['user'].get('id')  # Assuming 'user_id' is stored in the session
             recolector = Recolector.objects.filter(id=recolector_id).first()
 
             if not recolector:
-                #print("Recolector not found.")
+                messages.error(request, "Error: Error al recuperar recolección de usuario.")
                 return HttpResponseBadRequest("Recolector not found.")
             
-            #print(f"Recolector: {recolector}")
-
             material = Material.objects.filter(nombre=material_nombre).first()
             if not material:
-                #print(f"Material '{material_nombre}' does not exist.")
+                messages.error(request, "Error: El material indicado no existe.")
                 return HttpResponseBadRequest(f"Material '{material_nombre}' does not exist.")
             
             with transaction.atomic():
                 # Check if there's an existing Recoleccion for this user today
-                #print("Checking for existing Recoleccion")
                 recoleccion, created = Recoleccion.objects.get_or_create(
                     recolector=recolector,
                     semana=date.today(),
@@ -70,14 +68,8 @@ def _obtener_recoleccion(request):
                         'aprobada': False
                     }
                 )
-                
-                #if created:
-                #    print("New Recoleccion created.")
-                #else:
-                #    print("Existing Recoleccion found.")
 
                 # Create a new RecoleccionMaterial
-                #print(f"Creating RecoleccionMaterial for material {material.nombre} and cantidad {cantidad}")
                 RecoleccionMaterial.objects.create(
                     material=material,
                     recoleccion=recoleccion,
@@ -85,21 +77,28 @@ def _obtener_recoleccion(request):
                 )
 
                 # Update payment
-                #print(f"Updating Recoleccion payment by adding {material.precio * cantidad}")
                 recoleccion.pago += material.precio * cantidad
                 recoleccion.save()
 
-            #print("Recoleccion successfully processed.")
+            messages.success(request, "Material de recolección procesado con éxito.")
             return JsonResponse({"message": "Recoleccion successfully processed."})
         
         except json.JSONDecodeError as e:
-            print("Invalid JSON data.")
+            print("Invalid JSON Format")
+            messages.error(request, "Error: Formulario con formato incorrecto. Vuelva a intentarlo.")
             return HttpResponseBadRequest("Invalid JSON data.")
+        
+        except IntegrityError as e:
+            print(f"IntegrityError: {str(e)}")
+            messages.error(request, f"Error: Material ya ingresado en la recolección de hoy.")
+            return HttpResponseBadRequest(f"IntegrityError: {str(e)}")
         
         except Exception as e:
             print(f"Error processing the request: {str(e)}")
+            messages.error(request, f"Ocurró un error. Contacte un administrador.")
             return HttpResponseBadRequest(f"Error processing the request: {str(e)}")
     
     print("Invalid request method.")
-    return HttpResponseBadRequest("Invalid request method.")
+    messages.error(request, f"Ocurró un error. Contacte un administrador.")
+    return HttpResponseBadRequest(f"Invalid request method: {str(e)}")
     

@@ -167,22 +167,4 @@ SESSION_COOKIE_SECURE = False
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_COOKIE_AGE = 1800 # 30 minutos
 
-# Puedes también usar SESSION_SAVE_EVERY_REQUEST si deseas actualizar la expiración en cada solicitud.
-# SESSION_SAVE_EVERY_REQUEST = True
-
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'handlers': {
-#         'console': {
-#             'level': 'DEBUG',
-#             'class': 'logging.StreamHandler',
-#         },
-#     },
-#     'loggers': {
-#         'django.db.backends': {
-#             'level': 'DEBUG',
-#             'handlers': ['console'],
-#         },
-#     },
-# }
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'

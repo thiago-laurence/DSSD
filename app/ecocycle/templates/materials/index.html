@@ -6,9 +6,27 @@
             <div class="bg-white shadow-md rounded-lg px-8 mb-4 py-6">
                 <h1 class="text-3xl font-bold mb-4">Ingresar Materiales</h1>
             </div>
+
+
+
             <form method="POST" class="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4 py-6" action="{% url 'materials:send' %}">
                 {% csrf_token %}
                 <table class="table-auto w-full mb-4">
+
+                    {% if messages %}
+                    <tr>
+                        <td colspan="2">
+                            <div class="flex justify-center">
+                                {% for message in messages %}
+                                    <div id="flash-message" class="alert alert-{{ message.tags }}">
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                  {% endif %}
+
                     <tr>
                         <td class="px-4 py-2 font-semibold">Material</td>
                         <td class="px-4 py-2">

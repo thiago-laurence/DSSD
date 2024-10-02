@@ -14,6 +14,16 @@
       <img src="{% static 'img/logo.jpeg' %}" alt="Ecocycle" class="rounded-full w-28 h-28 mx-auto" />
     </figure>
 
+    {% if messages %}
+      <div class="flex justify-center">
+        {% for message in messages %}
+          <div id="flash-message" class="alert alert-{{ message.tags }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
     <div class="flex items-center justify-center pt-10">
       <a href="{% url 'materials:index' %}" class="btn bg-white-500 hover:bg-green-700 text-green-500 font-bold rounded-xl text-3xl inline-block button floating">
         Cargar Materiales
