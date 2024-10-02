@@ -6,19 +6,19 @@
             <div class="bg-white shadow-md rounded-lg px-8 mb-4 py-6">
                 <h1 class="text-3xl font-bold mb-4">Ingresar Materiales</h1>
             </div>
-            <form method="post" class="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4 py-6" action="{% url 'materials:send' %}">
+            <form method="POST" class="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4 py-6" action="{% url 'materials:send' %}">
                 {% csrf_token %}
                 <table class="table-auto w-full mb-4">
                     <tr>
                         <td class="px-4 py-2 font-semibold">Material</td>
                         <td class="px-4 py-2">
-                            <input type="text" name="material_tipo" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            <input type="text" name="material" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                         </td>
                     </tr>
                     <tr>
                         <td class="px-4 py-2 font-semibold">Cantidad</td>
                         <td class="px-4 py-2">
-                            <input type="floatformat" name="material_cantidad" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            <input type="floatformat" name="cantidad" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                         </td>
                     </tr>
                 </table>

@@ -59,6 +59,8 @@ class Command(BaseCommand):
         m1 = Material.objects.create(nombre='Aluminio', precio=0.5)
         m2 = Material.objects.create(nombre='Acero', precio=0.3)
         m3 = Material.objects.create(nombre='Carton', precio=0.1)
+        m4 = Material.objects.create(nombre='Vidrio', precio=0.2)
+        m4 = Material.objects.create(nombre='Plástico', precio=0.3)
 
         # Recolecciones
         rc1 = r1.recolecciones.create(
