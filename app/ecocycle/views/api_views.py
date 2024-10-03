@@ -64,12 +64,18 @@ def obtener_procesos(request):
         if response.status_code == 200:
             # Obtengo el id del proceso
             process_id = response.json()[0]['id']
-            # Le pego a la API de Bonita que instancia el proceso
-            url = f"http://localhost:8080/bonita/API/bpm/process/{process_id}/instantiation" 
-            response = requests.post(url, headers=headers)
+
+            # Antes de instanciar el proceso tengo que saber si no hay una instancia ya hecha para esa recolección:
+            if (request.session.get('recoleccion_id')):
+                case_id = request.session['recoleccion_id']
+            else:
+                # Le pego a la API de Bonita que instancia el proceso
+                url = f"http://localhost:8080/bonita/API/bpm/process/{process_id}/instantiation" 
+                response = requests.post(url, headers=headers)
+                request.session['recoleccion_id'] = response.json()['caseId']
             
             # Este es el id de la instancia del proceso (un case)
-            case_id = response.json()['caseId'] 
+            case_id = request.session['recoleccion_id'] 
             
             ok = request.POST.get('finalize_process')
             ok_value = {"type": "java.lang.String", "value": "verdadero" if ok else "falso"} 
@@ -77,18 +83,11 @@ def obtener_procesos(request):
             # proceso (setea la variable del case)
             url = f"http://localhost:8080/bonita/API/bpm/caseVariable/{case_id}/ok" 
             response = requests.put(url, headers=headers, data=json.dumps(ok_value))
-            #Setea las variables del material
-            material_tipo_value = {"type": "java.lang.String", "value": material_tipo} 
-            url = f"http://localhost:8080/bonita/API/bpm/caseVariable/{case_id}/material_tipo"
-            response = requests.put(url, headers=headers, data=json.dumps(material_tipo_value))
-            material_cantidado_value = {"type": "java.lang.String", "value": material_cantidad} 
-            url = f"http://localhost:8080/bonita/API/bpm/caseVariable/{case_id}/material_cantidad" 
-            response = requests.put(url, headers=headers, data=json.dumps(material_cantidado_value))
 
             # Le pego a la API de Bonita que obtiene la tarea (task)
             url = f"http://localhost:8080/bonita/API/bpm/task?p=0&c=10&f=caseId={case_id}" 
             response = requests.get(url, headers=headers)
-            task_id = response.json()[0]['id'] # Este es el id de la tarea/task (creo)
+            task_id = response.json()[0]['id'] # Este es el id de la tarea/task
 
             # Le pego a la API de Bonita que obtiene el usuario
             url = f"http://localhost:8080/bonita/API/identity/user?p=0&c=10&f=userName={username}" 
@@ -97,16 +96,18 @@ def obtener_procesos(request):
             user_id = response_user.json()[0]['id']
             value = {
                 "assigned_id": f"{user_id}", 
-                #"state": "ready",
-                "assign": "true"
+                "state": "ready",
+                #"assign": "true"
             }
+            
             # Le pego a la API de Bonita que le asigna la task al usuario
             url = f"http://localhost:8080/bonita/API/bpm/userTask/{task_id}" 
-            requests.put(url, headers=headers, data=json.dumps(value))
+            response = requests.put(url, headers=headers, data=json.dumps(value))
             
-            # Le pego a la API de Bonita que finaliza la tarea
-            url = f"http://localhost:8080/bonita/API/bpm/userTask/{task_id}/execution"
-            requests.post(url, headers=headers)
+            if ok:
+                # Le pego a la API de Bonita que finaliza la tarea
+                url = f"http://localhost:8080/bonita/API/bpm/userTask/{task_id}/execution?assign=true"
+                requests.post(url, headers=headers)
             
             return JsonResponse(response.json(), safe=False)
         else:
@@ -115,3 +116,15 @@ def obtener_procesos(request):
     else:
         print("No se pudo autenticar con Bonita")
         return JsonResponse({"error": "No se pudo autenticar con Bonita"}, status=400)
+
+
+
+            #Setea las variables del material
+            #material_tipo_value = {"type": "java.lang.String", "value": material_tipo} 
+            #url = f"http://localhost:8080/bonita/API/bpm/caseVariable/{case_id}/material_tipo"
+            #response = requests.put(url, headers=headers, data=json.dumps(material_tipo_value))
+
+            #Setea las variables de la cantidad
+            #material_cantidado_value = {"type": "java.lang.String", "value": material_cantidad} 
+            #url = f"http://localhost:8080/bonita/API/bpm/caseVariable/{case_id}/material_cantidad" 
+            #response = requests.put(url, headers=headers, data=json.dumps(material_cantidado_value))
