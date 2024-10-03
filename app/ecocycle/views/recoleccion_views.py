@@ -24,8 +24,8 @@ def update_recoleccion(request):
     recoleccion = get_object_or_404(Recoleccion, id=request.data.get('id_recoleccion'))
     
     recoleccion.observaciones = request.data.get('observaciones')
-    recoleccion.aprobada = True
     recoleccion.notificacion = True
+    recoleccion.finalizada = True
     centro = Centro.objects.get(id=request.session['user']['id'])
     
     for rm in recoleccion.recoleccionmaterial_set.all():

@@ -16,16 +16,16 @@
                         Numero de recoleccion
                         <div class="badge badge-primary-content">{{ context.recoleccion.id }}</div>
                     </button>
-                    {% if context.recoleccion.aprobada %}
+                    {% if context.recoleccion.finalizada %}
                         <button type="button" class="btn btn-sm btn-success mb-2 lg:mb-0">
                             <div class="badge badge-primary-content">
-                                Aprobada
+                                Finalizada
                             </div>
                         </button>
                     {% else %}
                         <button type="button" class="btn btn-sm btn-warning mb-2 lg:mb-0">
                             <div class="badge badge-primary-content">
-                                Pendiente
+                                En progreso
                             </div>
                         </button>
                     {% endif %}
@@ -66,9 +66,7 @@
                     placeholder="Observaciones">{{ context.recoleccion.observaciones }}</textarea>
                 
                 <input type="hidden" name="id_recoleccion" value="{{ context.recoleccion.id }}">
-                {% if not context.recoleccion.aprobada %}
-                    <button type="submit" class="btn btn-primary w-full mt-4">Aprobar</button>
-                {% endif %}
+                <button type="submit" class="btn btn-primary w-full mt-4">Enviar</button>
                 <a href="{% url 'centro:index' %}">
                     <button type="button" class="btn btn-neutral mt-4">Volver</button>
                 </a>

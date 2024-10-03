@@ -9,8 +9,85 @@
                 <p class="py-6">
                     Activá la economía circular registrando tus recolecciones de residuos reciclables realizados durante el día.
                 </p>
-                <button class="btn btn-primary">Comenzar</button>
             </div>
+        </div>
+    </div>
+
+    <div class="card bg-base-100 shadow-xl mx-4 my-10 sm:mx-auto sm:w-3/4">
+        <div class="card-body">
+            <h2 class="card-title text-2xl">Registro de materiales</h2>
+            <p>Selecciona el material recolectado e ingresa su cantidad (en Kg).</p>
+            <div class="divider"></div>
+            {% if context.recoleccion %}
+                <div class="flex flex-col items-center mb-8">
+                    <button type="button" class="btn btn-sm w-full sm:w-1/2 btn-neutral mb-4">
+                        Nro de recoleccción actual
+                        <div class="badge badge-secondary">{{ context.recoleccion.id }}</div>
+                    </button>
+                    <p class="text-center">
+                        Otórguele este número al encargado del punto de acopio para realizar la validación de la recolección.
+                    </p>
+                </div>
+            {% endif %}
+
+            {% if context.recoleccion and context.recoleccion.finalizada %}
+                <div class="text-center">
+                    <p class="font-bold text-xl">
+                        ¡Jornada de la semana finalizada!
+                    </p>
+                </div>
+            {% else %}
+                <form method="POST" action="{% url 'recolector:add_recoleccion' %}">
+                    {% csrf_token %}
+                    <div class="flex items-center space-x-8">
+                        <p class="font-semibold">
+                            Material
+                        </p>
+                        <select class="select select-primary w-full" name="material" required>
+                            <option selected disabled>Seleccione un material</option>
+                            {% for m in context.materiales %}
+                                <option value="{{ m.id }}">{{ m.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="flex items-center space-x-8 my-4">
+                        <p class="font-semibold">
+                            Cantidad
+                        </p>
+                        <label class="input input-primary flex items-center gap-2 w-full">
+                            <input type="number" class="grow w-full" name="cantidad" placeholder="1.0" required min="0" max="9999999999.99" />
+                            <span class="badge badge-info">Kg</span>
+                        </label>
+                    </div>
+                    <p>
+                        Una vez que esta sea la última recolección, marca la casilla para finalizar la jornada.
+                    </p>
+                    <div class="flex items-center justify-center my-4 sm:w-1/2 mx-auto">
+                        <p class="font-semibold mr-2">
+                            ¿Última recolección?
+                        </p>
+                        <input type="checkbox" name="finalize_process" class="checkbox checkbox-primary" />
+                    </div>
+
+                    {% if messages %}
+                        {% for message in messages %}
+                        <div role="alert" class="alert alert-error mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>{{ message }}</span>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if context.recoleccion.id %}
+                        <input type="hidden" name="id_recoleccion" value="{{ context.recoleccion.id }}" />
+                    {% endif %}
+                    <div class="card-actions justify-end">
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+                    </div>
+                </form>
+            {% endif %}
         </div>
     </div>
 {% endblock content %}

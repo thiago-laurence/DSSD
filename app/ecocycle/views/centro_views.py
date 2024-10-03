@@ -5,7 +5,7 @@ from ecocycle.models.recoleccion import Recoleccion
 
 @api_view(['GET'])
 def index(request):
-    if 'user' not in request.session:
+    if 'user' not in request.session or request.session['user']['subclase'] != 'centro':
         return redirect('login:index')
     
     id_recoleccion = request.GET.get('id_recoleccion', '')
