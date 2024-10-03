@@ -68,6 +68,11 @@ def obtener_procesos(request):
             # Antes de instanciar el proceso tengo que saber si no hay una instancia ya hecha para esa recolección:
             if (request.session.get('recoleccion_id')):
                 case_id = request.session['recoleccion_id']
+
+                # Obtengo el id de la tarea
+                url = f"http://localhost:8080/bonita/API/bpm/task?p=0&c=10&f=caseId={case_id}" 
+                response = requests.get(url, headers=headers)
+                task_id = response.json()[0]['id']
             else:
                 # Le pego a la API de Bonita que instancia el proceso
                 url = f"http://localhost:8080/bonita/API/bpm/process/{process_id}/instantiation" 
@@ -93,14 +98,15 @@ def obtener_procesos(request):
                 
                 # Le pego a la API de Bonita que le asigna la task al usuario
                 url = f"http://localhost:8080/bonita/API/bpm/userTask/{task_id}" 
-                response = requests.put(url, headers=headers, data=json.dumps(value))
+                requests.put(url, headers=headers, data=json.dumps(value))
+                
             
             ok = request.POST.get('finalize_process')
             ok_value = {"type": "java.lang.String", "value": "verdadero" if ok else "falso"} 
             # Le pego a la API de Bonita que setea la variable de instancia del 
             # proceso (setea la variable del case)
             url = f"http://localhost:8080/bonita/API/bpm/caseVariable/{case_id}/ok" 
-            response = requests.put(url, headers=headers, data=json.dumps(ok_value))
+            requests.put(url, headers=headers, data=json.dumps(ok_value))
 
             if ok:
                 # Le pego a la API de Bonita que finaliza la tarea
