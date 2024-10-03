@@ -1,4 +1,5 @@
 import datetime
+from decimal import Decimal
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from ecocycle.models.managers.user import CustomUser
@@ -50,17 +51,17 @@ class Command(BaseCommand):
 
         # Puntos de recoleccion
         p1 = Punto.objects.create(nombre='Taller mecanico Carlitos', direccion='Calle 1 1230', password='123', email='punto1@example.com')
-        p2 = Punto.objects.create(nombre='Punto 2', direccion='Calle 2', password='123', email='punto2@example.com')
+        p2 = Punto.objects.create(nombre='Papelera 44', direccion='Av. 44', password='123', email='punto2@example.com')
 
         # Centros de acopio
         Centro.objects.create(nombre='Centro de acopio La Plata', direccion='Av. 7 1850', password='123', email='centro1@example.com')
 
         # Materiales
-        m1 = Material.objects.create(nombre='Aluminio', precio=0.5)
-        m2 = Material.objects.create(nombre='Acero', precio=0.3)
-        m3 = Material.objects.create(nombre='Carton', precio=0.1)
-        m4 = Material.objects.create(nombre='Vidrio', precio=0.2)
-        m4 = Material.objects.create(nombre='Plástico', precio=0.3)
+        m1 = Material.objects.create(nombre='Aluminio', precio=Decimal(0.5))
+        m2 = Material.objects.create(nombre='Acero', precio=Decimal(0.4))
+        m3 = Material.objects.create(nombre='Carton', precio=Decimal(0.1))
+        m4 = Material.objects.create(nombre='Vidrio', precio=Decimal(0.2))
+        m4 = Material.objects.create(nombre='Plástico', precio=Decimal(0.3))
 
         # Recolecciones
         rc1 = r1.recolecciones.create(

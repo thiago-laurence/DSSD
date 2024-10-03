@@ -1,12 +1,14 @@
+import datetime
+from decimal import Decimal
 from django.db import models
 
 class Recoleccion(models.Model):
     materiales = models.ManyToManyField('Material', through='RecoleccionMaterial')
     recolector = models.ForeignKey('Recolector', related_name='recolecciones', on_delete=models.CASCADE)
-    semana = models.DateField()
-    pago = models.DecimalField(max_digits=10, decimal_places=2)
-    observaciones = models.TextField(max_length=250)
-    aprobada = models.BooleanField(default=False)
+    semana = models.DateField(default=datetime.date.today)
+    pago = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal(0.0))
+    observaciones = models.TextField(max_length=250, default='')
+    finalizada = models.BooleanField(default=False)
     notificacion = models.BooleanField(default=False)
     
     class Meta:
@@ -28,21 +30,12 @@ class Recoleccion(models.Model):
             'semana': self.semana,
             'pago': self.pago,
             'observaciones': self.observaciones,
-            'aprobada': self.aprobada
+            'finalizada': self.finalizada,
+            'notificacion': self.notificacion
         }
     
     def to_dict_info(self):
-        return {
-            'id': self.id,
-            'materiales': [
-                {
-                    'material': material.nombre,
-                    'cantidad': material.recoleccionmaterial_set.get(recoleccion=self).cantidad
-                } for material in self.materiales.all()
-            ],
-            'semana': self.semana,
-            'pago': self.pago,
-            'observaciones': self.observaciones,
-            'aprobada': self.aprobada,
-            'notificacion': self.notificacion
-        }
+        dict = self.to_dict()
+        del dict['recolector']
+        
+        return dict
