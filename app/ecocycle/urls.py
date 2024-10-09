@@ -21,6 +21,9 @@ urlpatterns = [
 
     # Bonita urls
     path("bonita/", include("ecocycle.urls_.bonita_urls")),
+
+    # API urls
+    path("api/", include("ecocycle.urls_.api_urls")),
 ]
 
 handler404 = 'views.error_views.error_404'
