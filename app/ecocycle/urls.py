@@ -19,8 +19,8 @@ urlpatterns = [
     # Recoleccion urls
     path("recoleccion/", include("ecocycle.urls_.recoleccion_urls")),
 
-    # API urls
-    path("api/", include("ecocycle.urls_.api_urls")),
+    # Bonita urls
+    path("bonita/", include("ecocycle.urls_.bonita_urls")),
 ]
 
 handler404 = 'views.error_views.error_404'

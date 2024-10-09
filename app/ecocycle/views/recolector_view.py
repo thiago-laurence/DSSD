@@ -1,12 +1,12 @@
 from decimal import Decimal
 from django.utils import timezone
 from django.contrib import messages
-from django.shortcuts import redirect, render, get_list_or_404
+from django.shortcuts import redirect, render
 from rest_framework.decorators import api_view
 from ecocycle.models.recoleccion import Recoleccion
 from ecocycle.models.recoleccion_material import RecoleccionMaterial
 from ecocycle.models.material import Material
-from ecocycle.views.api_views import obtener_procesos
+# from ecocycle.views.bonita_views import obtener_procesos
 
 @api_view(['GET'])
 def index(request):
@@ -74,7 +74,7 @@ def add_recoleccion(request):
     recoleccion.pago += material.precio * rm.cantidad
     recoleccion.materiales.add(material)
     
-    obtener_procesos(request) # Usa la API de Bonita
+    # obtener_procesos(request) # Usa la API de Bonita
     materiales = [m for m in Material.objects.all() if m not in recoleccion.materiales.all()]
     if request.POST.get("finalize_process") or (not materiales):
         recoleccion.finalizada = True
