@@ -5,7 +5,7 @@ class Pedido(models.Model):
     id = models.AutoField(primary_key=True)
     id_global = models.IntegerField(unique=True)
     id_local = models.IntegerField(unique=True)
-    material = models.ForeignKey('Material', on_delete=models.PROTECT)
+    material = models.OneToOneField('Material', on_delete=models.PROTECT)
     cantidad = models.IntegerField()
     fecha = models.DateTimeField(default=timezone.now)
 
