@@ -7,6 +7,7 @@ from ecocycle.models.recolector import Recolector
 from ecocycle.models.punto import Punto
 from ecocycle.models.centro import Centro
 from ecocycle.models.material import Material
+from ecocycle.models.pedido import Pedido
 from ecocycle.models.recoleccion_material import RecoleccionMaterial
 
 class Command(BaseCommand):
@@ -72,6 +73,8 @@ class Command(BaseCommand):
         RecoleccionMaterial.objects.create(recoleccion=rc1, material=m1, cantidad=1)
         RecoleccionMaterial.objects.create(recoleccion=rc1, material=m2, cantidad=2)
         RecoleccionMaterial.objects.create(recoleccion=rc1, material=m3, cantidad=3)
+        Pedido.objects.create(id_global=1, id_local=1, material=m1, cantidad=1)
+        Pedido.objects.create(id_global=2, id_local=2, material=m4, cantidad=10)
 
         # Asignacion de Puntos a Recolectores
         r1.puntos.add(p1)
