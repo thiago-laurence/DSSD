@@ -2,6 +2,7 @@ import datetime
 from decimal import Decimal
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from ecocycle.models.deposito import Deposito
 from ecocycle.models.managers.user import CustomUser
 from ecocycle.models.recolector import Recolector
 from ecocycle.models.punto import Punto
@@ -55,7 +56,10 @@ class Command(BaseCommand):
         p2 = Punto.objects.create(nombre='Papelera 44', direccion='Av. 44', password='123', email='punto2@example.com')
 
         # Centros de acopio
-        Centro.objects.create(nombre='Centro de acopio La Plata', direccion='Av. 7 1850', password='123', email='centro1@example.com')
+        c1 = Centro.objects.create(nombre='Centro de acopio La Plata', direccion='Av. 7 1850', password='123', email='centro1@example.com')
+
+        # Depositos
+        d1 = Deposito.objects.create(nombre='Deposito 1', direccion='13 y 52', password='123', email='deposito1@example.com')
 
         # Materiales
         m1 = Material.objects.create(nombre='Aluminio', precio=Decimal(0.5))
@@ -73,8 +77,7 @@ class Command(BaseCommand):
         RecoleccionMaterial.objects.create(recoleccion=rc1, material=m1, cantidad=1)
         RecoleccionMaterial.objects.create(recoleccion=rc1, material=m2, cantidad=2)
         RecoleccionMaterial.objects.create(recoleccion=rc1, material=m3, cantidad=3)
-        Pedido.objects.create(id_global=1, id_local=1, material=m1, cantidad=1)
-        Pedido.objects.create(id_global=2, id_local=2, material=m4, cantidad=10)
+        Pedido.objects.create(deposito=d1, centro=None, material=m1, cantidad=1)
 
         # Asignacion de Puntos a Recolectores
         r1.puntos.add(p1)
