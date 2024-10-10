@@ -5,7 +5,8 @@ from ..views import api_views as views
 app_name = "api"
 urlpatterns = [
     path("hello/", views.hello, name="hello"),
-    path("token/", TokenObtainPairView.as_view(), name="token"),
-    path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("user/", views.get_user, name="get_user"),
+    path("login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("login/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("pedidos/", views.get_pedidos, name="get_pedidos"),
 ]
