@@ -3,8 +3,10 @@ from django.http import JsonResponse
 from ..models.deposito import Deposito
 from ..models.pedido import Pedido
 from ..models.material import Material
+from ..serializers.recolector import RecolectorSerializer
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -12,6 +14,12 @@ import json
 @api_view(['GET'])
 def hello(request):
     return Response("Hello, world!", status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user(request):
+    serializer = RecolectorSerializer(request.user)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def get_pedidos(request):
