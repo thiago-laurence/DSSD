@@ -1,11 +1,12 @@
 import json
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
-from django.views.decorators.csrf import csrf_exempt
 from ..models.deposito import Deposito
 from ..models.pedido import Pedido
 from ..models.material import Material
@@ -32,35 +33,25 @@ def list_users(request):
     return paginator.get_paginated_response(serializer.data)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_pedidos(request):
-    pedidos = Pedido.objects.all().values()
-    return JsonResponse(list(pedidos), safe=False)
+    pedidos = Pedido.objects.all().order_by('-fecha').values()
+    paginator = PageNumberPagination()
+    paginator.page_size = 10
+    result_page = paginator.paginate_queryset(pedidos, request)
+    return paginator.get_paginated_response(list(result_page))
 
 @csrf_exempt
-@api_view(['GET'])
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_pedido(request):
-    data = json.loads(request.body)
-    deposito_id = data['deposito']
-    material_nombre = data['material']
-    cantidad = data['cantidad']
-    
-    # Fetch Deposito object
-    try:
-        deposito = Deposito.objects.get(id=deposito_id)
-    except Deposito.DoesNotExist:
-        return JsonResponse({'error': 'Deposito not found'}, status=404)
-
-    # Fetch Material object
-    try:
-        material = Material.objects.get(nombre=material_nombre)
-    except Material.DoesNotExist:
-        return JsonResponse({'error': 'Material not found'}, status=404)
-
-    # Create the Pedido object
+    deposito = get_object_or_404(Deposito, id=request.data.get('deposito'))
+    material = get_object_or_404(Material, nombre=request.data.get('material'))
+    cantidad = request.data.get('cantidad')
     pedido = Pedido.objects.create(
         deposito=deposito,
-        centro=None,
         material=material,
         cantidad=cantidad
     )
+    
     return JsonResponse({'message': 'Pedido created successfully', 'pedido_id': pedido.id}, status=201)
