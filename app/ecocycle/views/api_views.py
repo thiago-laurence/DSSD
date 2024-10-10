@@ -1,15 +1,16 @@
+import json
 from django.http import JsonResponse
-
-from ..models.deposito import Deposito
-from ..models.pedido import Pedido
-from ..models.material import Material
-from ..serializers.recolector import RecolectorSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 from django.views.decorators.csrf import csrf_exempt
-import json
+from ..models.deposito import Deposito
+from ..models.pedido import Pedido
+from ..models.material import Material
+from ..models.recolector import Recolector
+from ..serializers.recolector import RecolectorSerializer
 
 @api_view(['GET'])
 def hello(request):
@@ -20,6 +21,15 @@ def hello(request):
 def get_user(request):
     serializer = RecolectorSerializer(request.user)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def list_users(request):
+    users = Recolector.objects.all().order_by('email')
+    paginator = PageNumberPagination()
+    paginator.page_size = 1
+    result_page = paginator.paginate_queryset(users, request)
+    serializer = RecolectorSerializer(result_page, many=True)
+    return paginator.get_paginated_response(serializer.data)
 
 @api_view(['GET'])
 def get_pedidos(request):
