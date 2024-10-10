@@ -3,10 +3,10 @@ from django.utils import timezone
 
 class Pedido(models.Model):
     id = models.AutoField(primary_key=True)
-    id_deposito = models.IntegerField(unique=True)
-    id_centro = models.IntegerField(unique=True)
-    material = models.OneToOneField('Material', on_delete=models.PROTECT)
-    cantidad = models.IntegerField()
+    deposito = models.ForeignKey('Deposito', on_delete=models.PROTECT, null=False, blank=False)
+    centro = models.ForeignKey('Centro', on_delete=models.PROTECT, null=True, blank=True)
+    material = models.OneToOneField('Material', on_delete=models.PROTECT, null=False, blank=False)
+    cantidad = models.IntegerField(null=False, blank=False)
     fecha = models.DateTimeField(default=timezone.now)
 
     class Meta:
