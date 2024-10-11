@@ -1,0 +1,247 @@
+openapi: 3.0.3
+info:
+  title: Swagger Ecocycle - OpenAPI 3.0
+  description: |-
+    Este es un servidor del sistema de reciclaje circular Ecocycle basado en la especificación OpenAPI 3.0. Puede obtener más información sobre Swagger en [https://swagger.io](https://swagger.io).
+    
+    Algunos enlaces útiles:
+    - [Repositorio Ecocycle](https://github.com/thiago-laurence/DSSD/tree/feat/prod)
+    - [Definición de API](https://github.com/thiago-laurence/DSSD/blob/feat/prod/openapi.yaml)
+  version: 1.0.
+servers:
+  - url: https://django-app-aer5.onrender.com/ecocycle/api
+tags:
+  - name: pedido
+    description: Administra los pedidos de materiales
+    externalDocs:
+      description: Operaciones disponibles
+      url: http://swagger.io
+  - name: usuario
+    description: Operaciones disponibles
+paths:
+  /pedido/:
+    get:
+      tags:
+        - pedido
+      summary: Lista los pedidos realizados por los depositos
+      description: Obtene la pagina indicada por el parametro enviado, en caso de no enviarlo, se retorna la primera pagina.
+      operationId: getPedidoByPage
+      parameters:
+        - name: page
+          in: query
+          description: Numero de pagina de pedidos
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Listado de pedidos obtenido correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PedidoPage'          
+        '404':
+          description: Página inválida
+  /pedido/add:
+    post:
+      tags:
+        - pedido
+      summary: Agrega un nuevo pedido de materiales
+      description: Crea un nuevo pedido de materiales para los centros de acopio
+      operationId: addPedido
+      requestBody:
+        description: Crea un nuevo pedido
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PedidoNew'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PedidoNew'
+        required: true
+      responses:
+        '201':
+          description: Pedido creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pedido'
+        '400':
+          description: El campo Cantidad debe ser entero
+        '404':
+          description: El campo Deposito o Material no existe sobre la consulta realizada
+  /login:
+    post:
+      tags:
+        - usuario
+      summary: Iniciar sesion en el sistema
+      description: 'Envia tus credenciales y recibi el token de acceso al sistema'
+      operationId: loginUsuario
+      requestBody:
+        description: Crea un nuevo pedido
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      responses:
+        '201':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '400':
+          description: El campo email es requerido, el campo password es requerido
+        '401':
+          description: No existe una cuenta activa con las credenciales enviadas
+components:
+  schemas:
+    Pedido:
+      required:
+        - id
+        - deposito
+        - material
+        - cantidad
+        - centro
+        - fecha
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 12
+        deposito:
+          $ref: '#/components/schemas/Deposito'
+        material:
+          $ref: '#/components/schemas/Material'
+        centro:
+          $ref: '#/components/schemas/Centro'
+        cantidad:
+          type: integer
+          format: int64
+          example: 18
+        fecha:
+          type: string
+          description: Fecha de creacion del pedido de materiales
+          example: 2024-10-11T10:39:40.904681Z
+    PedidoNew:
+      required:
+        - deposito
+        - material
+        - cantidad
+      type: object
+      properties:
+        deposito:
+          type: integer
+          format: int64
+          example: 12
+        material:
+          type: string
+          description: Nombre del material
+          example: Acero
+        cantidad:
+          type: integer
+          format: int64
+          example: 18
+    Centro:
+      required:
+        - id
+        - email
+        - nombre
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 09
+        email:
+          type: string
+          description: Correo electronico del centro de acopio
+          example: centro1@gmail.com
+        nombre:
+          type: string
+          description: Nombre del centro de acopio
+          example: Centro Plantese
+    Deposito:
+      required:
+        - id
+        - email
+        - nombre
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 09
+        email:
+          type: string
+          description: Correo electronico del deposito global
+          example: depocaba@gmail.com
+        nombre:
+          type: string
+          description: Nombre del deposito
+          example: Deposito CABA
+    Material:
+      required:
+        - id
+        - nombre
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 09
+        nombre:
+          type: string
+          description: Nombre del material
+          example: Acero
+    Token:
+      required:
+        - access
+        - refresh
+      type: object
+      properties:
+        access:
+          type: string
+          description: Token de acceso
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ
+        refresh:
+          type: string
+          description: Token de refresco
+          example: OpOSSw7e485LOP5PrzScxHb7SR6sAOMRckfFwi4rp7o
+    Login:
+      required:
+        - email
+        - password
+      type: object
+      properties:
+        email:
+          type: string
+          description: Email del usuario
+          example: mgallardo@gmail.com
+        password:
+          type: string
+          description: Contraseña del usuario
+          example: 091218
+    PedidoPage:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int64
+          example: 10
+        next:
+          type: string
+          example: https://django-app-aer5.onrender.com/ecocycle/api/v1/pedidos/?page=2
+        previus:
+          type: string
+          example: null
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Pedido'
