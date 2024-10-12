@@ -11,6 +11,7 @@ from ..models.deposito import Deposito
 from ..models.pedido import Pedido
 from ..models.material import Material
 from ..models.recolector import Recolector
+from ..models.centro import Centro
 from ..serializers.recolector import RecolectorSerializer
 from ..serializers.pedido import PedidoSerializer
 
@@ -36,7 +37,7 @@ def list_users(request):
     return paginator.get_paginated_response(serializer.data)
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def get_pedidos(request):
     pedidos = Pedido.objects.all().order_by('-fecha')
     paginator = PageNumberPagination()
@@ -64,3 +65,16 @@ def add_pedido(request):
     serializer = PedidoSerializer(pedido)
 
     return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+
+@csrf_exempt
+@api_view(['POST'])
+def asignar_pedido(request):
+    pedido_id = request.POST.get('pedido_id')
+    if pedido_id:
+        pedido = Pedido.objects.get(id=pedido_id)
+        centro_asignado = Centro.objects.get(id=request.session['user']['id'])
+        pedido.centro = centro_asignado
+        pedido.save()
+        return JsonResponse({"message": "Pedido tomado correctamente."}, status=200)
+    else:
+        return JsonResponse({"error": "ID de pedido no proporcionado."}, status=400)

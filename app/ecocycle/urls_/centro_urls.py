@@ -5,4 +5,5 @@ app_name = "centro"
 urlpatterns = [
     path("", views.index, name="index"),
     path("perfil/<int:id_centro>", views.view_perfil, name="view_perfil"),
+    path("pedidos", views.list_pedidos, name="list_pedidos"),
 ]

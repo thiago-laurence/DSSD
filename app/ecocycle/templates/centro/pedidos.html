@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Ecocycle - Pedidos Pendientes
+{% endblock title %}
+
+{% block content %}
+<div class="hero bg-base-200 py-20">
+    <div class="hero-content w-full flex flex-wrap gap-6 justify-center">
+
+        {% if pedidos %}
+            {% for pedido in pedidos %}
+                <div class="card w-96 bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h2 class="card-title">Pedido #{{ pedido.id }}</h2>
+                        <p>Material: {{ pedido.material.nombre }}</p>
+                        <p>Cantidad: {{ pedido.cantidad }} Kg</p>
+
+                        <div class="card-actions justify-end">
+                            <form action="{% url 'api:assign_pedido' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="pedido_id" value="{{ pedido.id }}">
+                                <button type="submit" class="btn btn-primary">Tomar Pedido</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No hay pedidos pendientes en este momento.</p>
+        {% endif %}
+        
+    </div>
+</div>
+{% endblock content %}
