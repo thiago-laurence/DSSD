@@ -71,7 +71,7 @@ class Command(BaseCommand):
         m4 = Material.objects.create(nombre='Plástico', precio=Decimal(0.3))
 
         # Asignarle materiales al centro
-        CentroMaterial.objects.create(centro=c1, material=m1, cantidad=1)
+        CentroMaterial.objects.create(centro=c1, material=m1, cantidad=4)
         CentroMaterial.objects.create(centro=c1, material=m4, cantidad=3)
 
         # Recolecciones
@@ -83,7 +83,7 @@ class Command(BaseCommand):
         RecoleccionMaterial.objects.create(recoleccion=rc1, material=m1, cantidad=1)
         RecoleccionMaterial.objects.create(recoleccion=rc1, material=m2, cantidad=2)
         RecoleccionMaterial.objects.create(recoleccion=rc1, material=m3, cantidad=3)
-        Pedido.objects.create(deposito=d1, centro=None, material=m1, cantidad=2)
+        Pedido.objects.create(deposito=d1, centro=None, material=m1, cantidad=3)
 
         # Asignacion de Puntos a Recolectores
         r1.puntos.add(p1)
