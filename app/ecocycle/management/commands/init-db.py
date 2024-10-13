@@ -10,6 +10,7 @@ from ecocycle.models.centro import Centro
 from ecocycle.models.material import Material
 from ecocycle.models.pedido import Pedido
 from ecocycle.models.recoleccion_material import RecoleccionMaterial
+from ecocycle.models.centro_material import CentroMaterial
 
 class Command(BaseCommand):
     help = 'Initializes the database with initial datasets'
@@ -31,6 +32,7 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR(f'Error durante el proceso: {e}'))
 
     def reset_database(self):
+        Pedido.objects.all().delete()
         CustomUser.objects.all().delete()
         Recolector.objects.all().delete()
         Punto.objects.all().delete()
@@ -68,6 +70,10 @@ class Command(BaseCommand):
         m4 = Material.objects.create(nombre='Vidrio', precio=Decimal(0.2))
         m4 = Material.objects.create(nombre='Plástico', precio=Decimal(0.3))
 
+        # Asignarle materiales al centro
+        CentroMaterial.objects.create(centro=c1, material=m1, cantidad=1)
+        CentroMaterial.objects.create(centro=c1, material=m4, cantidad=3)
+
         # Recolecciones
         rc1 = r1.recolecciones.create(
             semana=datetime.date(2024, 10, 7),
@@ -77,7 +83,7 @@ class Command(BaseCommand):
         RecoleccionMaterial.objects.create(recoleccion=rc1, material=m1, cantidad=1)
         RecoleccionMaterial.objects.create(recoleccion=rc1, material=m2, cantidad=2)
         RecoleccionMaterial.objects.create(recoleccion=rc1, material=m3, cantidad=3)
-        Pedido.objects.create(deposito=d1, centro=None, material=m1, cantidad=1)
+        Pedido.objects.create(deposito=d1, centro=None, material=m1, cantidad=2)
 
         # Asignacion de Puntos a Recolectores
         r1.puntos.add(p1)
