@@ -40,7 +40,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PedidoPage'          
+                allOf:
+                - $ref: '#/components/schemas/Page'
+                - type: object
+                  properties:
+                    results:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Pedido'
         '404':
           description: Página inválida
   /pedido/add:
@@ -55,10 +62,44 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PedidoNew'
+              required:
+                - deposito
+                - material
+                - cantidad
+              type: object
+              properties:
+                deposito:
+                  type: integer
+                  format: int64
+                  example: 12
+                material:
+                  type: string
+                  description: Nombre del material
+                  example: Acero
+                cantidad:
+                  type: integer
+                  format: int64
+                  example: 18
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PedidoNew'
+              required:
+                - deposito
+                - material
+                - cantidad
+              type: object
+              properties:
+                deposito:
+                  type: integer
+                  format: int64
+                  example: 12
+                material:
+                  type: string
+                  description: Nombre del material
+                  example: Acero
+                cantidad:
+                  type: integer
+                  format: int64
+                  example: 18
         required: true
       responses:
         '201':
@@ -70,7 +111,63 @@ paths:
         '400':
           description: El campo Cantidad debe ser entero
         '404':
-          description: El campo Deposito o Material no existe sobre la consulta realizada
+          description: El campo Deposito o Material no existen sobre la consulta realizada
+  /pedido/assign:
+    post:
+      tags:
+        - pedido
+      summary: Aceptar pedido de materiales
+      description: Toma el pedido de metariales realizado por un deposito
+      operationId: assignPedido
+      requestBody:
+        description: Aceptar un pedido
+        content:
+          application/json:
+            schema:
+              required:
+                - pedido_id
+                - centro_id
+              type: object
+              properties:
+                pedido_id:
+                  type: integer
+                  format: int64
+                  example: 12
+                centro_id:
+                  type: integer
+                  format: int64
+                  example: 18
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+                - pedido_id
+                - centro_id
+              type: object
+              properties:
+                pedido_id:
+                  type: integer
+                  format: int64
+                  example: 12
+                centro_id:
+                  type: string
+                  format: int64
+                  example: 18
+        required: true
+      responses:
+        '200':
+          description: Pedido tomado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Pedido tomado correctamente.
+        '400':
+          description: El campo cantidad_id y centro_id deben ser entero
+        '404':
+          description: El campo Deposito o Material no existen sobre la consulta realizada
   /login:
     post:
       tags:
@@ -129,25 +226,6 @@ components:
           type: string
           description: Fecha de creacion del pedido de materiales
           example: 2024-10-11T10:39:40.904681Z
-    PedidoNew:
-      required:
-        - deposito
-        - material
-        - cantidad
-      type: object
-      properties:
-        deposito:
-          type: integer
-          format: int64
-          example: 12
-        material:
-          type: string
-          description: Nombre del material
-          example: Acero
-        cantidad:
-          type: integer
-          format: int64
-          example: 18
     Centro:
       required:
         - id
@@ -228,7 +306,7 @@ components:
           type: string
           description: Contraseña del usuario
           example: 091218
-    PedidoPage:
+    Page:
       type: object
       properties:
         count:
@@ -241,7 +319,3 @@ components:
         previus:
           type: string
           example: null
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Pedido'
