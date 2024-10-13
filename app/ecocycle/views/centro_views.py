@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render
 from django.core.paginator import Paginator, EmptyPage
 from rest_framework.decorators import api_view
 from ecocycle.models.recoleccion import Recoleccion
+from ecocycle.models.centro import Centro
 import requests
 
 @api_view(['GET'])
@@ -28,7 +29,16 @@ def view_perfil(request, id_centro):
     if 'user' not in request.session:
         return redirect('login:index')
     
-    return render(request, 'centro/perfil.html')
+    centro_id = request.session['user']['id']
+    centro = Centro.objects.get(id=centro_id)
+
+    materiales = centro.materiales.all()
+    #materiales = [material for material in materiales]
+    context = {
+        'materiales': materiales
+    }
+
+    return render(request, 'centro/perfil.html', context)
 
 @api_view(['GET'])
 def list_pedidos(request):
@@ -37,10 +47,10 @@ def list_pedidos(request):
     
     response = requests.get('http://localhost:8000/ecocycle/api/pedidos')
     pedidos = response.json().get('results') # Lista de pedidos
+    pedidos_sin_centro = [pedido for pedido in pedidos if pedido['centro'] is None]
 
     context = {
-        'pedidos': pedidos
+        'pedidos': pedidos_sin_centro
     }
-    print(context['pedidos'][0])
 
     return render(request, 'centro/pedidos.html', context)

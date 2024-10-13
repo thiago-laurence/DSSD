@@ -68,13 +68,18 @@ def add_pedido(request):
 
 @csrf_exempt
 @api_view(['POST'])
+#@permission_classes([IsAuthenticated])
 def asignar_pedido(request):
     pedido_id = request.POST.get('pedido_id')
     if pedido_id:
         pedido = Pedido.objects.get(id=pedido_id)
         centro_asignado = Centro.objects.get(id=request.session['user']['id'])
-        pedido.centro = centro_asignado
-        pedido.save()
-        return JsonResponse({"message": "Pedido tomado correctamente."}, status=200)
+        hay_materiales = centro_asignado.has_enough_material(pedido.material, pedido.cantidad)
+        if hay_materiales:
+            pedido.centro = centro_asignado
+            pedido.save()
+            return JsonResponse({"message": "Pedido tomado correctamente."}, status=200)
+        else: 
+            return JsonResponse({"error": "No hay suficiente material en el centro de acopio."}, status=400)
     else:
         return JsonResponse({"error": "ID de pedido no proporcionado."}, status=400)
