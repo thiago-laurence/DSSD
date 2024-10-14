@@ -19,6 +19,9 @@ urlpatterns = [
     # Recoleccion urls
     path("recoleccion/", include("ecocycle.urls_.recoleccion_urls")),
 
+    # Administrador urls
+    path("administrador/", include("ecocycle.urls_.administrador_urls")),
+
     # Bonita urls
     path("bonita/", include("ecocycle.urls_.bonita_urls")),
 
