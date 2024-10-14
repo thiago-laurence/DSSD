@@ -25,20 +25,11 @@ def index(request):
     return render(request, 'centro/index.html', { 'context': context })
 
 @api_view(['GET'])
-def view_perfil(request, id_centro):
+def view_perfil(request):
     if 'user' not in request.session:
         return redirect('login:index')
-    
-    centro_id = request.session['user']['id']
-    centro = Centro.objects.get(id=centro_id)
 
-    materiales = centro.materiales.all()
-    #materiales = [material for material in materiales]
-    context = {
-        'materiales': materiales
-    }
-
-    return render(request, 'centro/perfil.html', context)
+    return render(request, 'centro/perfil.html')
 
 @api_view(['GET'])
 def list_pedidos(request):
