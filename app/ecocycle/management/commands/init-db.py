@@ -4,6 +4,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from ecocycle.models.deposito import Deposito
 from ecocycle.models.managers.user import CustomUser
+from ecocycle.models.administrador import Administrador
 from ecocycle.models.recolector import Recolector
 from ecocycle.models.punto import Punto
 from ecocycle.models.centro import Centro
@@ -33,15 +34,17 @@ class Command(BaseCommand):
 
     def reset_database(self):
         Pedido.objects.all().delete()
-        CustomUser.objects.all().delete()
-        Recolector.objects.all().delete()
         Punto.objects.all().delete()
         Material.objects.all().delete()
         RecoleccionMaterial.objects.all().delete()
+        CustomUser.objects.all().delete()
 
     def create_example_data(self):
         # Superusuario
         CustomUser.objects.create_superuser(email='admin@ecocycle.com', password='admin123')
+
+        # Administrador
+        Administrador.objects.create(nombre='admin', apellido='admin', email='admin1@example.com', password='123')
 
         # Recolectores
         r1 = Recolector.objects.create(nombre='John', apellido='Doe', email='johndoe@example.com', password='123')
