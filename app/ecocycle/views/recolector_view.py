@@ -6,13 +6,12 @@ from rest_framework.decorators import api_view
 from ecocycle.models.recoleccion import Recoleccion
 from ecocycle.models.recoleccion_material import RecoleccionMaterial
 from ecocycle.models.material import Material
+from ecocycle.helpers.auth import login_required
 # from ecocycle.views.bonita_views import obtener_procesos
 
 @api_view(['GET'])
+@login_required(subclase='recolector')
 def index(request):
-    if 'user' not in request.session or request.session['user']['subclase'] != 'recolector':
-        return redirect('login:index')
-    
     context = {
         'materiales': Material.objects.all(),
     }
@@ -31,6 +30,7 @@ def index(request):
     return render(request, 'recolector/index.html', { 'context': context })
 
 @api_view(['GET'])
+@login_required(subclase='recolector')
 def view_recolecciones(request, id_recolector):
     if 'user' not in request.session:
         return redirect('login:index')
@@ -43,6 +43,7 @@ def view_recolecciones(request, id_recolector):
     return render(request, 'recolector/recolecciones.html', { 'context': context })
 
 @api_view(['POST'])
+@login_required(subclase='recolector')
 def close_recoleccion(request, id_recoleccion):
     if 'user' not in request.session:
         return redirect('login:index')
@@ -56,6 +57,7 @@ def close_recoleccion(request, id_recoleccion):
     return redirect('recolector:view_recolecciones', id_recolector=recoleccion.recolector.id)
 
 @api_view(['POST'])
+@login_required(subclase='recolector')
 def add_recoleccion(request):
     if 'user' not in request.session:
         return redirect('login:index')

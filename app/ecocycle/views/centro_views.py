@@ -1,15 +1,14 @@
+import requests
 from django.shortcuts import redirect, render
 from django.core.paginator import Paginator, EmptyPage
 from rest_framework.decorators import api_view
 from ecocycle.models.recoleccion import Recoleccion
 from ecocycle.models.centro import Centro
-import requests
+from ecocycle.helpers.auth import login_required
 
 @api_view(['GET'])
-def index(request):
-    if 'user' not in request.session or request.session['user']['subclase'] != 'centro':
-        return redirect('login:index')
-    
+@login_required(subclase='centro')
+def index(request):    
     id_recoleccion = request.GET.get('id_recoleccion', '')
     context = {
         'id_recoleccion': id_recoleccion,
@@ -25,17 +24,13 @@ def index(request):
     return render(request, 'centro/index.html', { 'context': context })
 
 @api_view(['GET'])
+@login_required(subclase='centro')
 def view_perfil(request):
-    if 'user' not in request.session:
-        return redirect('login:index')
-
     return render(request, 'centro/perfil.html')
 
 @api_view(['GET'])
-def list_pedidos(request):
-    if 'user' not in request.session:
-        return redirect('login:index')
-    
+@login_required(subclase='centro')
+def list_pedidos(request): 
     response = requests.get('http://localhost:8000/ecocycle/api/pedidos')
     pedidos = response.json().get('results') # Lista de pedidos
     pedidos_sin_centro = [pedido for pedido in pedidos if pedido['centro'] is None]

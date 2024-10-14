@@ -5,8 +5,10 @@ from rest_framework.decorators import api_view
 from ecocycle.models.punto import Punto
 from ecocycle.models.material import Material
 from ecocycle.models.centro import Centro
+from ecocycle.helpers.auth import login_required
 
 @api_view(['GET'])
+@login_required(subclase='administrador')
 def index(request):
     if 'user' not in request.session or request.session['user']['subclase'] != 'administrador':
         return redirect('login:index')
@@ -14,6 +16,7 @@ def index(request):
     return render(request, 'administrador/index.html')
 
 @api_view(['GET'])
+@login_required(subclase='administrador')
 def view_puntos(request):
     context = {
         'puntos': [ p.to_dict() for p in Punto.objects.all().order_by('nombre')],
@@ -23,6 +26,7 @@ def view_puntos(request):
     return render(request, 'administrador/puntos.html', {'context': context })
 
 @api_view(['POST'])
+@login_required(subclase='administrador')
 def add_punto(request):
     if 'materiales' not in request.POST:
         messages.error(request, "Debe seleccionar al menos un material")
@@ -44,6 +48,7 @@ def add_punto(request):
     return redirect('administrador:puntos')
 
 @api_view(['GET'])
+@login_required(subclase='administrador')
 def view_centros(request):
     context = {
         'centros': [ c.to_dict() for c in Centro.objects.all().order_by('nombre')],
@@ -52,6 +57,7 @@ def view_centros(request):
     return render(request, 'administrador/centros.html', {'context': context })
 
 @api_view(['POST'])
+@login_required(subclase='administrador')
 def add_centro(request):
     nombre = request.POST['nombre']
     direccion = request.POST['direccion']
@@ -65,6 +71,7 @@ def add_centro(request):
     return redirect('administrador:centros')
 
 @api_view(['GET'])
+@login_required(subclase='administrador')
 def view_materiales(request):
     context = {
         'materiales': Material.objects.all().order_by('nombre')
@@ -72,6 +79,7 @@ def view_materiales(request):
     return render(request, 'administrador/materiales.html', {'context': context })
 
 @api_view(['POST'])
+@login_required(subclase='administrador')
 def add_material(request):
     nombre = request.POST['nombre'].lower().capitalize()
     precio = Decimal(request.POST['precio'])

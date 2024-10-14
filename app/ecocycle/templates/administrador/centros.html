@@ -23,25 +23,25 @@
                     <p class="font-semibold">
                         Nombre
                     </p>
-                    <input type="text" name="nombre" placeholder="" class="input input-primary w-full" required />
+                    <input type="text" name="nombre" placeholder="Ingrese el nombre del centro" class="input input-primary w-full" required />
                 </div>
                 <div class="flex items-center space-x-8 my-4">
                     <p class="font-semibold">
                         Dirección
                     </p>
-                    <input type="text" name="direccion" placeholder="" class="input input-primary w-full" required />
+                    <input type="text" name="direccion" placeholder="Ingrese su dirección" class="input input-primary w-full" required />
                 </div>
                 <div class="flex items-center space-x-8 my-4">
                     <p class="font-semibold">
                         Email
                     </p>
-                    <input type="email" name="email" placeholder="" class="input input-primary w-full" required />
+                    <input type="email" name="email" placeholder="Ingrese el correo electrónico" class="input input-primary w-full" required />
                 </div>
                 <div class="flex items-center space-x-8 my-4">
                     <p class="font-semibold">
                         Contraseña
                     </p>
-                    <input type="password" name="password" placeholder="" class="input input-primary w-full" required />
+                    <input type="password" name="password" placeholder="Ingrese su contraseña" class="input input-primary w-full" required />
                 </div>
 
                 {% if messages %}
@@ -101,7 +101,7 @@
                                     <ul>
                                         {% for m in r.materiales %}
                                             <li>
-                                                - {{ m.material }}: {{ m.cantidad }} Kg.
+                                                - {{ m.nombre }}: {{ m.cantidad }} Kg.
                                             </li>
                                         {% endfor %}
                                     </ul>
