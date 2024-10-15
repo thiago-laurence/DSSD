@@ -33,7 +33,11 @@ def view_perfil(request):
 def list_pedidos(request): 
     response = requests.get('http://localhost:8000/ecocycle/api/pedidos')
     pedidos = response.json().get('results') # Lista de pedidos
-    pedidos_sin_centro = [pedido for pedido in pedidos if pedido['centro'] is None]
+
+    if pedidos:
+        pedidos_sin_centro = [pedido for pedido in pedidos if pedido['centro'] is None]
+    else:
+        pedidos_sin_centro = []
 
     context = {
         'pedidos': pedidos_sin_centro
