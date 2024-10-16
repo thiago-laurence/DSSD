@@ -7,7 +7,10 @@ class Pedido(models.Model):
     centro = models.ForeignKey('Centro', on_delete=models.PROTECT, null=True, blank=True)
     material = models.ForeignKey('Material', on_delete=models.PROTECT, null=False, blank=False)
     cantidad = models.IntegerField(null=False, blank=False)
-    fecha = models.DateTimeField(default=timezone.now)
+    fecha_creacion = models.DateTimeField(default=timezone.now)
+    fecha_solicitada = models.DateTimeField(default=None, null=True, blank=True)
+    fecha_reserva = models.DateTimeField(default=None, null=True, blank=True)
+    fecha_envio = models.DateTimeField(default=None, null=True, blank=True)
 
     class Meta:
         db_table = 'pedido'
