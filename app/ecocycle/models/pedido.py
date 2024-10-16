@@ -15,8 +15,8 @@ class Pedido(models.Model):
     class Meta:
         db_table = 'pedido'
         constraints = [
-            models.UniqueConstraint(fields=['deposito', 'material', 'fecha'],   name='unique_deposito_material_fecha',)
+            models.UniqueConstraint(fields=['deposito', 'material', 'fecha_creacion'],   name='unique_deposito_material_fecha-creacion',)
         ]
 
     def __str__(self):
-        return f'Pedido {self.id} [{self.fecha.strftime("%Y-%m-%d %H:%M:%S")}] - Deposito {self.deposito} Centro {self.centro}. Material: {self.material} ({self.cantidad})'
+        return f'Pedido {self.id} [{self.fecha_creacion.strftime("%Y-%m-%d %H:%M:%S")}] - Deposito {self.deposito} Centro {self.centro}. Material: {self.material} ({self.cantidad})'
