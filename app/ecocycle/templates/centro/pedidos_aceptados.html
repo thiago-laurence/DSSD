@@ -8,19 +8,9 @@
 {% block content %}
 <div class="hero bg-base-200 py-20">
     <div class="hero-content w-full flex flex-wrap gap-6 justify-center">
-
-        {% if messages %}
-            <div class="w-full">
-                {% for message in messages %}
-                    <div class="alert alert-error">{{ message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
-
         <div class="w-full flex justify-end mb-4 justify-center">
-            <a href="{% url 'centro:pedidos_aceptados' %}" class="btn btn-success btn-sm">Pedidos Aceptados</a>
+            <a href="{% url 'centro:list_pedidos' %}" class="btn btn-success btn-sm">Pedidos Pendientes</a>
         </div>
-
         {% if pedidos %}
             {% for pedido in pedidos %}
                 <div class="card w-96 bg-base-100 shadow-xl">
@@ -30,17 +20,17 @@
                         <p>Cantidad: {{ pedido.cantidad }} Kg</p>
 
                         <div class="card-actions justify-end">
-                            <form action="{% url 'centro:assign_pedido' %}" method="POST">
+                            <form action="{% url 'centro:enviar_pedido' %}" method="POST">
                                 {% csrf_token %}
                                 <input type="hidden" name="pedido_id" value="{{ pedido.id }}">
-                                <button type="submit" class="btn btn-primary">Tomar Pedido</button>
+                                <button type="submit" class="btn btn-primary">Enviar Pedido</button>
                             </form>
                         </div>
                     </div>
                 </div>
             {% endfor %}
         {% else %}
-            <p>No hay pedidos pendientes en este momento.</p>
+            <p>No hay pedidos por enviar en este momento.</p>
         {% endif %}
         
     </div>

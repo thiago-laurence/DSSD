@@ -1,6 +1,7 @@
-from django.utils import timezone
 import requests
+from django.utils import timezone
 from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage
 from ecocycle.models.pedido import Pedido
 from rest_framework.decorators import api_view
@@ -35,7 +36,7 @@ def view_perfil(request):
 def list_pedidos(request): 
     response = requests.get('http://localhost:8000/ecocycle/api/pedidos')
     pedidos = response.json().get('results') # Lista de pedidos
-    print(pedidos)
+    
     if pedidos:
         pedidos_sin_centro = [pedido for pedido in pedidos if pedido['centro'] is None]
     else:
@@ -63,6 +64,47 @@ def asignar_pedido(request):
             
             return redirect('centro:list_pedidos') # Redirige a la lista de pedidos
         else: 
-            return render(request, 'centro/perfil.html')
+            messages.error(request, 'No hay suficientes materiales para aceptar este pedido')
+            return redirect('centro:list_pedidos')
+    else:
+        return render(request, 'centro/perfil.html')
+    
+@api_view(['GET'])
+@login_required(subclase='centro')
+def list_pedidos_aceptados(request):
+    centro = get_object_or_404(Centro, id=request.session['user']['id'])
+    pedidos = Pedido.objects.filter(centro=centro)
+
+    if pedidos:
+        pedidos_pendientes_envio = [pedido for pedido in pedidos if pedido.fecha_envio is None]
+    else:
+        pedidos_pendientes_envio = []
+    
+    
+    paginator = Paginator(pedidos_pendientes_envio, 10)
+    page_number = request.GET.get('page', 1)
+    
+    try:
+        page = paginator.page(page_number)
+    except EmptyPage:
+        page = paginator.page(1)
+    
+    context = {
+        'pedidos': page.object_list,
+        'page': page,
+    }
+    
+    return render(request, 'centro/pedidos_aceptados.html', context)
+
+@api_view(['POST'])
+@login_required(subclase='centro')
+def enviar_pedido(request):
+    pedido_id = request.data.get('pedido_id')
+    if pedido_id:
+        pedido = get_object_or_404(Pedido, id=pedido_id)
+        pedido.fecha_envio = timezone.now()
+        pedido.save()
+        
+        return redirect('centro:pedidos_aceptados')
     else:
         return render(request, 'centro/perfil.html')
