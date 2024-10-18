@@ -11,7 +11,6 @@ from ..models.deposito import Deposito
 from ..models.pedido import Pedido
 from ..models.material import Material
 from ..models.recolector import Recolector
-from ..models.centro import Centro
 from ..serializers.recolector import RecolectorSerializer
 from ..serializers.pedido import PedidoSerializer
 
@@ -39,12 +38,11 @@ def list_users(request):
 @api_view(['GET'])
 #@permission_classes([IsAuthenticated])
 def get_pedidos(request):
-    pedidos = Pedido.objects.all().order_by('-fecha')
+    pedidos = Pedido.objects.all().order_by('-fecha_creacion')
     paginator = PageNumberPagination()
     paginator.page_size = 10
     result_page = paginator.paginate_queryset(pedidos, request)
     serializer = PedidoSerializer(result_page, many=True)
-
     return paginator.get_paginated_response(serializer.data)
 
 @csrf_exempt
@@ -65,24 +63,3 @@ def add_pedido(request):
     serializer = PedidoSerializer(pedido)
 
     return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
-
-@csrf_exempt
-@api_view(['POST'])
-#@permission_classes([IsAuthenticated])
-def asignar_pedido(request):
-    pedido_id = request.data.get('pedido_id')
-    if pedido_id:
-        pedido = get_object_or_404(Pedido, id=pedido_id)
-        centro_asignado = get_object_or_404(Centro, id=request.session['user']['id'])
-        hay_materiales = centro_asignado.has_enough_material(pedido.material, pedido.cantidad)
-        
-        if hay_materiales:
-            pedido.centro = centro_asignado
-            pedido.save()
-            
-            serializer = PedidoSerializer(pedido)
-            return JsonResponse(serializer.data, status=200)
-        else: 
-            return JsonResponse({"error": "No hay suficiente material en el centro de acopio."}, status=400)
-    else:
-        return JsonResponse({"error": "ID de pedido no proporcionado."}, status=400)

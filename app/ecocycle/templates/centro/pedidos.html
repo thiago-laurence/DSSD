@@ -18,7 +18,7 @@
                         <p>Cantidad: {{ pedido.cantidad }} Kg</p>
 
                         <div class="card-actions justify-end">
-                            <form action="{% url 'api:assign_pedido' %}" method="POST">
+                            <form action="{% url 'centro:assign_pedido' %}" method="POST">
                                 {% csrf_token %}
                                 <input type="hidden" name="pedido_id" value="{{ pedido.id }}">
                                 <button type="submit" class="btn btn-primary">Tomar Pedido</button>
