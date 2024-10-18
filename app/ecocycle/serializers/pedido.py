@@ -11,4 +11,5 @@ class PedidoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Pedido
-        fields = ['id', 'deposito', 'centro', 'material', 'cantidad', 'fecha']
+        fields = ['id', 'deposito', 'centro', 'material', 'cantidad', 'fecha_creacion',
+                   'fecha_solicitada', 'fecha_reserva', 'fecha_envio']
