@@ -13,11 +13,10 @@ servers:
 tags:
   - name: pedido
     description: Administra los pedidos de materiales
-    externalDocs:
-      description: Operaciones disponibles
-      url: http://swagger.io
   - name: usuario
-    description: Operaciones disponibles
+    description: Acceso al sistema
+  - name: deposito
+    description: Depositos globales
 paths:
   /pedido/:
     get:
@@ -196,6 +195,38 @@ paths:
           description: El campo email es requerido, el campo password es requerido
         '401':
           description: No existe una cuenta activa con las credenciales enviadas
+  /depositos/add:
+    post:
+      tags:
+        - deposito
+      summary: Registra nuevos depositos globales
+      description: 'Envia los datos del deposito a registrar'
+      operationId: addDeposito
+      requestBody:
+        description: Crea un nuevo deposito global
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Deposito'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Deposito'
+        required: true
+      responses:
+        '201':
+          description: El deposito fue registrado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: El deposito fue registrado correctamente.
+        '400':
+          description: Nombre, dirección, email y password son campos obligatorios
+        '409':
+          description: El email del deposito ya fue registrado
 components:
   schemas:
     Pedido:
@@ -247,15 +278,12 @@ components:
           example: Centro Plantese
     Deposito:
       required:
-        - id
         - email
+        - password
+        - direccion
         - nombre
       type: object
       properties:
-        id:
-          type: integer
-          format: int64
-          example: 09
         email:
           type: string
           description: Correo electronico del deposito global
@@ -264,6 +292,14 @@ components:
           type: string
           description: Nombre del deposito
           example: Deposito CABA
+        direccion:
+          type: string
+          description: Direccion del deposito
+          example: Av. Corrientes
+        password:
+          type: string
+          description: Contraseña del deposito
+          example: 123
     Material:
       required:
         - id
