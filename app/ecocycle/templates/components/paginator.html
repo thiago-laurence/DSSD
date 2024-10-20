@@ -1,5 +1,5 @@
 {% with view=view page=page page_range=page_range %}
-    <div class="flex justify-center my-4">
+    <div class="flex justify-center my-4 w-full">
         <div class="join">
             {% for i in page_range %}
                 {% if page == i %}
@@ -15,4 +15,3 @@
         </div>
     </div>
 {% endwith %}
-{% include 'components/paginator.html' with view=context.view page=context.page page_range=context.page_range %}

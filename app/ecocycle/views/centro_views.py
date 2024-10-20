@@ -5,7 +5,6 @@ from django.core.paginator import Paginator, EmptyPage
 from ecocycle.models.pedido import Pedido
 from rest_framework.decorators import api_view
 from ecocycle.models.recoleccion import Recoleccion
-from ecocycle.models.recolector import Recolector
 from ecocycle.models.centro import Centro
 from ecocycle.helpers.auth import login_required
 
@@ -33,17 +32,28 @@ def view_perfil(request):
 
 @api_view(['GET'])
 @login_required(subclase='centro')
-def list_pedidos(request): 
+def list_pedidos(request):
+    page = int(request.GET.get('page', 1))
+    per_page = 3
     pedidos = Pedido.objects.select_related('deposito',
      'centro', 'material').order_by('-fecha_creacion') # Lista de pedidos
 
     if pedidos:
         pedidos_sin_centro = [pedido for pedido in pedidos if pedido.centro is None]
+        paginator = Paginator(pedidos_sin_centro, per_page)
+        try:
+            pedidos_sin_centro = paginator.page(page)
+        except EmptyPage:
+            pedidos_sin_centro = paginator.page(paginator.num_pages)
     else:
         pedidos_sin_centro = []
 
     context = {
-        'pedidos': pedidos_sin_centro
+        'pedidos': pedidos_sin_centro,
+        'page': page,
+        'per_page': per_page,
+        'page_range': range(1, paginator.num_pages + 1),
+        'view': 'centro:list_pedidos'
     }
 
     return render(request, 'centro/pedidos.html', context)
@@ -72,26 +82,27 @@ def asignar_pedido(request):
 @api_view(['GET'])
 @login_required(subclase='centro')
 def list_pedidos_aceptados(request):
+    page = int(request.GET.get('page', 1))
+    per_page = 3
     centro = get_object_or_404(Centro, id=request.session['user']['id'])
     pedidos = Pedido.objects.filter(centro=centro)
 
     if pedidos:
         pedidos_pendientes_envio = [pedido for pedido in pedidos if pedido.fecha_envio is None]
+        paginator = Paginator(pedidos_pendientes_envio, per_page)
+        try:
+            pedidos_pendientes_envio = paginator.page(page)
+        except EmptyPage:
+            pedidos_pendientes_envio = paginator.page(paginator.num_pages)
     else:
         pedidos_pendientes_envio = []
     
-    
-    paginator = Paginator(pedidos_pendientes_envio, 10)
-    page_number = request.GET.get('page', 1)
-    
-    try:
-        page = paginator.page(page_number)
-    except EmptyPage:
-        page = paginator.page(1)
-    
     context = {
-        'pedidos': page.object_list,
+        'pedidos': pedidos_pendientes_envio,
         'page': page,
+        'per_page': per_page,
+        'page_range': range(1, paginator.num_pages + 1),
+        'view': 'centro:pedidos_aceptados'
     }
     
     return render(request, 'centro/pedidos_aceptados.html', context)
@@ -108,27 +119,3 @@ def enviar_pedido(request):
         return redirect('centro:pedidos_aceptados')
     else:
         return render(request, 'centro/perfil.html')
-
-# @api_view(['GET'])
-# @login_required(subclase='centro')
-# def paginator(request):
-#     page = int(request.GET.get('page', 1))
-#     per_page = 2
-    
-#     users = Recolector.objects.order_by('email')
-#     user_list = users.values('id', 'email', 'nombre', 'apellido')
-#     paginator = Paginator(user_list, per_page)
-#     try:
-#         user_list = paginator.page(page)
-#     except EmptyPage:
-#         user_list = paginator.page(paginator.num_pages)
-    
-#     context = {
-#         'user_list': list(user_list),
-#         'page': page,
-#         'per_page': per_page,
-#         'page_range': range(1, paginator.num_pages + 1),
-#         'view': 'centro:index'
-#     }
-
-#     return render(request, 'centro/index.html', { 'context': context })

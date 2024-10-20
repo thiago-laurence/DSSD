@@ -89,7 +89,7 @@
                             <td class="text-center">{{ r.observaciones }}</td>
                             <td class="text-center">
                                 {% if r.finalizada %}
-                                    <form action="{% url 'recolector:close_recoleccion' r.id %}">
+                                    <form action="{% url 'recolector:close_recoleccion' r.id %}" method="POST">
                                         {% csrf_token %}
                                         <label class="swap swap-flip text-2xl">
                                             {% if r.notificacion %}
