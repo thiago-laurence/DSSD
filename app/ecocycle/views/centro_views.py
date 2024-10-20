@@ -1,4 +1,3 @@
-import requests
 from django.utils import timezone
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
@@ -34,11 +33,11 @@ def view_perfil(request):
 @api_view(['GET'])
 @login_required(subclase='centro')
 def list_pedidos(request): 
-    response = requests.get('http://localhost:8000/ecocycle/api/pedidos')
-    pedidos = response.json().get('results') # Lista de pedidos
-    
+    pedidos = Pedido.objects.select_related('deposito',
+     'centro', 'material').order_by('-fecha_creacion') # Lista de pedidos
+
     if pedidos:
-        pedidos_sin_centro = [pedido for pedido in pedidos if pedido['centro'] is None]
+        pedidos_sin_centro = [pedido for pedido in pedidos if pedido.centro is None]
     else:
         pedidos_sin_centro = []
 

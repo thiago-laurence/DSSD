@@ -36,7 +36,7 @@ def list_users(request):
     return paginator.get_paginated_response(serializer.data)
 
 @api_view(['GET'])
-#@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def get_pedidos(request):
     pedidos = Pedido.objects.all().order_by('-fecha_creacion')
     paginator = PageNumberPagination()
