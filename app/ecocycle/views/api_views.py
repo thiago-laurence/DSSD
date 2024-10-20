@@ -83,3 +83,21 @@ def asignar_pedido(request):
             return JsonResponse({"error": "No hay suficiente material en el centro de acopio."}, status=400)
     else:
         return JsonResponse({"error": "ID de pedido no proporcionado."}, status=400)
+
+# @csrf_exempt
+@api_view(['POST'])
+def add_deposito(request):
+    nombre = request.data.get('nombre')
+    direccion = request.data.get('direccion')
+    email = request.data.get('email')
+    password = request.data.get('password')
+
+    if not nombre or not direccion or not email or not password:
+        return JsonResponse({"error": "Nombre, dirección, email y password son campos obligatorios."}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        deposito = Deposito.objects.create( nombre=nombre, direccion=direccion, email=email, password=password)
+    except Exception as e:
+        return JsonResponse({"error": "El email del deposito ya fue registrado."}, status=status.HTTP_409_CONFLICT)
+    
+    return JsonResponse({"message": 'El deposito fue registrado correctamente'}, status=status.HTTP_201_CREATED)

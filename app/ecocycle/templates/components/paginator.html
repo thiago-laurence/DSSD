@@ -1,13 +1,13 @@
-{% with query=query page=page page_range=page_range %}
+{% with view=view page=page page_range=page_range %}
     <div class="flex justify-center my-4">
         <div class="join">
             {% for i in page_range %}
                 {% if page == i %}
-                    <a href="{% url 'punto:index' %}?query={{ query }}&page={{ i }}" class="join-item btn btn-primary btn-square">
+                    <a href="{% url view %}?&page={{ i }}" class="join-item btn btn-primary btn-square">
                         {{ i }}
                     </a>
                 {% else %}
-                    <a href="{% url 'punto:index' %}?query={{ query }}&page={{ i }}" class="join-item btn btn-neutral btn-square">
+                    <a href="{% url view %}?query={{ query }}&page={{ i }}" class="join-item btn btn-neutral btn-square">
                         {{ i }}
                     </a>
                 {% endif %}
@@ -15,3 +15,4 @@
         </div>
     </div>
 {% endwith %}
+{% include 'components/paginator.html' with view=context.view page=context.page page_range=context.page_range %}

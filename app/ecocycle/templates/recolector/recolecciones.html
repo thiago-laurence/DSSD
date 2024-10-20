@@ -75,16 +75,21 @@
                                 <ul>
                                     {% for m in r.materiales %}
                                         <li>
-                                            {{ m.material.nombre }}: {{ m.cantidad }} Kg.
+                                            - {{ m.material.nombre }}: 
+                                            {% if not r.cantidad_real %}
+                                                {{ m.cantidad_recolectada }} Kg.
+                                            {% else %}
+                                                {{ m.cantidad_real }} Kg.
+                                            {% endif %}
                                         </li>
                                     {% endfor %}
                                 </ul>
                             </td>
                             <td class="text-center">{{ r.pago }}</td>
                             <td class="text-center">{{ r.observaciones }}</td>
-                            <td>
+                            <td class="text-center">
                                 {% if r.finalizada %}
-                                    <form action="{% url 'recolector:close_recoleccion' r.id %}" method="POST" class="text-center">
+                                    <form action="{% url 'recolector:close_recoleccion' r.id %}">
                                         {% csrf_token %}
                                         <label class="swap swap-flip text-2xl">
                                             {% if r.notificacion %}
@@ -115,11 +120,15 @@
                                         </label>
                                     </form>
                                 {% else %}
+                                <form>
+                                    <label class="swap text-2xl">
                                     <div class="swap-off text-info">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                         </svg>                                  
                                     </div>
+                                    </label>
+                                </form>
                                 {% endif %}
                             </td>
                         </tr>

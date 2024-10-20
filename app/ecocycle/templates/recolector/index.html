@@ -7,7 +7,7 @@
             <div class="max-w-md">
                 <h1 class="text-4xl font-bold">Bienvenido "{{ request.session.user.nombre }}"</h1>
                 <p class="py-6">
-                    Activá la economía circular registrando tus recolecciones de residuos reciclables realizados durante el día.
+                    Activá la economía circular registrando tus recolecciones de residuos reciclables realizados durante el día sobre sus puntos de recoleccción asignados.
                 </p>
             </div>
         </div>
@@ -39,7 +39,18 @@
             {% else %}
                 <form method="POST" action="{% url 'recolector:add_recoleccion' %}">
                     {% csrf_token %}
-                    <div class="flex items-center space-x-8">
+                    <div class="flex items-center space-x-4">
+                        <p class="font-semibold">
+                            Punto de recoleccción
+                        </p>
+                        <select class="select select-primary w-full" name="punto" required>
+                            <option selected disabled>Seleccione un punto</option>
+                            {% for p in context.puntos %}
+                                <option value="{{ p.id }}">{{ p.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="flex items-center space-x-8 my-4">
                         <p class="font-semibold">
                             Material
                         </p>
@@ -55,7 +66,7 @@
                             Cantidad
                         </p>
                         <label class="input input-primary flex items-center gap-2 w-full">
-                            <input type="number" class="grow w-full" name="cantidad" placeholder="1.0" required min="0" max="9999999999.99" />
+                            <input type="number" class="grow w-full" name="cantidad_recolectada" placeholder="1.0" required min="0" max="9999999999.99" />
                             <span class="badge badge-info">Kg</span>
                         </label>
                     </div>
