@@ -12,6 +12,7 @@ from ..models.pedido import Pedido
 from ..models.material import Material
 from ..models.recolector import Recolector
 from ..models.centro import Centro
+from ..serializers.centro import CentroSerializer
 from ..serializers.recolector import RecolectorSerializer
 from ..serializers.pedido import PedidoSerializer
 
@@ -37,14 +38,13 @@ def list_users(request):
     return paginator.get_paginated_response(serializer.data)
 
 @api_view(['GET'])
-#@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def get_pedidos(request):
-    pedidos = Pedido.objects.all().order_by('-fecha')
+    pedidos = Pedido.objects.all().order_by('-fecha_creacion')
     paginator = PageNumberPagination()
     paginator.page_size = 10
     result_page = paginator.paginate_queryset(pedidos, request)
     serializer = PedidoSerializer(result_page, many=True)
-
     return paginator.get_paginated_response(serializer.data)
 
 @csrf_exempt
@@ -67,6 +67,28 @@ def add_pedido(request):
     return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
 
 @csrf_exempt
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_centros(request):
+    centros = Centro.objects.all().order_by('nombre')
+    paginator = PageNumberPagination()
+    paginator.page_size = 10
+    result_page = paginator.paginate_queryset(centros, request)
+
+    serializer = CentroSerializer(result_page, many=True)
+    
+    return paginator.get_paginated_response(serializer.data)
+
+    #return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+#
+    #pedidos = Pedido.objects.all().order_by('-fecha_creacion')
+    #paginator = PageNumberPagination()
+    #paginator.page_size = 10
+    #result_page = paginator.paginate_queryset(pedidos, request)
+    #serializer = PedidoSerializer(result_page, many=True)
+    #return paginator.get_paginated_response(serializer.data)
+
+@csrf_exempt
 @api_view(['POST'])
 #@permission_classes([IsAuthenticated])
 def asignar_pedido(request):
@@ -84,7 +106,7 @@ def asignar_pedido(request):
     else:
         return JsonResponse({"error": "ID de pedido no proporcionado."}, status=400)
 
-# @csrf_exempt
+@csrf_exempt
 @api_view(['POST'])
 def add_deposito(request):
     nombre = request.data.get('nombre')
