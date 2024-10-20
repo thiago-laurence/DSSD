@@ -62,6 +62,7 @@ class Command(BaseCommand):
 
         # Centros de acopio
         c1 = Centro.objects.create(nombre='Centro de acopio La Plata', direccion='Av. 7 1850', password='123', email='centro1@example.com')
+        c2 = Centro.objects.create(nombre='Centro de acopio Albuquerque', direccion='308 Negra Arroyo Lane', password='123', email='centro2@example.com')
 
         # Depositos
         d1 = Deposito.objects.create(nombre='Deposito 1', direccion='13 y 52', password='123', email='deposito1@example.com')
@@ -71,11 +72,13 @@ class Command(BaseCommand):
         m2 = Material.objects.create(nombre='Acero', precio=Decimal(0.4))
         m3 = Material.objects.create(nombre='Carton', precio=Decimal(0.1))
         m4 = Material.objects.create(nombre='Vidrio', precio=Decimal(0.2))
-        m4 = Material.objects.create(nombre='Plástico', precio=Decimal(0.3))
+        m5 = Material.objects.create(nombre='Plástico', precio=Decimal(0.3))
 
         # Asignarle materiales al centro
         CentroMaterial.objects.create(centro=c1, material=m1, cantidad=4)
         CentroMaterial.objects.create(centro=c1, material=m4, cantidad=3)
+        CentroMaterial.objects.create(centro=c2, material=m2, cantidad=3)
+        CentroMaterial.objects.create(centro=c2, material=m5, cantidad=3)
 
         # Recolecciones
         rc1 = r1.recolecciones.create(
