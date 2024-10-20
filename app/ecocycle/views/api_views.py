@@ -11,6 +11,8 @@ from ..models.deposito import Deposito
 from ..models.pedido import Pedido
 from ..models.material import Material
 from ..models.recolector import Recolector
+from ..models.centro import Centro
+from ..serializers.centro import CentroSerializer
 from ..serializers.recolector import RecolectorSerializer
 from ..serializers.pedido import PedidoSerializer
 
@@ -63,3 +65,25 @@ def add_pedido(request):
     serializer = PedidoSerializer(pedido)
 
     return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+
+@csrf_exempt
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_centros(request):
+    centros = Centro.objects.all().order_by('nombre')
+    paginator = PageNumberPagination()
+    paginator.page_size = 10
+    result_page = paginator.paginate_queryset(centros, request)
+
+    serializer = CentroSerializer(result_page, many=True)
+    
+    return paginator.get_paginated_response(serializer.data)
+
+    #return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+#
+    #pedidos = Pedido.objects.all().order_by('-fecha_creacion')
+    #paginator = PageNumberPagination()
+    #paginator.page_size = 10
+    #result_page = paginator.paginate_queryset(pedidos, request)
+    #serializer = PedidoSerializer(result_page, many=True)
+    #return paginator.get_paginated_response(serializer.data)

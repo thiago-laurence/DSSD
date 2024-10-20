@@ -11,4 +11,5 @@ urlpatterns = [
     path("login/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("pedidos/", views.get_pedidos, name="get_pedidos"),
     path('pedidos/add', views.add_pedido, name='add_pedido'),
+    path('centros/', views.get_centros, name='get_centros'),
 ]
