@@ -1,4 +1,5 @@
 import datetime
+from django.utils import timezone
 from decimal import Decimal
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -37,6 +38,7 @@ class Command(BaseCommand):
         RecoleccionMaterial.objects.all().delete()
         Material.objects.all().delete()
         Punto.objects.all().delete()
+        Centro.objects.all().delete()
         CustomUser.objects.all().delete()
 
     def create_example_data(self):
@@ -92,7 +94,7 @@ class Command(BaseCommand):
         rm3 = RecoleccionMaterial.objects.create(recoleccion=rc1, material=m3, punto=p1, cantidad_recolectada=3, cantidad_real=3)
         rc1.pago = sum([rm1.material.precio * rm1.cantidad_real, rm2.material.precio * rm2.cantidad_real, rm3.material.precio * rm3.cantidad_real])
         rc1.save()
-        Pedido.objects.create(deposito=d1, centro=None, material=m1, cantidad=3)
+        Pedido.objects.create(deposito=d1, centro=None, material=m1, cantidad=3, fecha_solicitada=timezone.now() + datetime.timedelta(days=7))
 
         # Asignacion de Puntos a Recolectores
         r1.puntos.add(p1)

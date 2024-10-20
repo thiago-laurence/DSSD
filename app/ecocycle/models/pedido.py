@@ -6,7 +6,7 @@ class Pedido(models.Model):
     deposito = models.ForeignKey('Deposito', on_delete=models.PROTECT, null=False, blank=False)
     centro = models.ForeignKey('Centro', on_delete=models.PROTECT, null=True, blank=True)
     material = models.ForeignKey('Material', on_delete=models.PROTECT, null=False, blank=False)
-    cantidad = models.IntegerField(null=False, blank=False)
+    cantidad = models.DecimalField(max_digits=10, decimal_places=2)
     fecha_creacion = models.DateTimeField(default=timezone.now)
     fecha_solicitada = models.DateTimeField(default=None, null=True, blank=True)
     fecha_reserva = models.DateTimeField(default=None, null=True, blank=True)
