@@ -9,7 +9,7 @@ class Lugar(CustomUser):
         abstract = True
 
     def __str__(self) -> str:
-        return self.nombre
+        return f'{self.id} {self.__class__.__name__}'
     
     def to_dict(self):
         dict = super().to_dict()

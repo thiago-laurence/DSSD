@@ -19,6 +19,12 @@ urlpatterns = [
     # Recoleccion urls
     path("recoleccion/", include("ecocycle.urls_.recoleccion_urls")),
 
+    # Administrador urls
+    path("administrador/", include("ecocycle.urls_.administrador_urls")),
+
+    # Bonita urls
+    path("bonita/", include("ecocycle.urls_.bonita_urls")),
+
     # API urls
     path("api/", include("ecocycle.urls_.api_urls")),
 ]

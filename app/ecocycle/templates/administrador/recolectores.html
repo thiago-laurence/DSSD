@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="hero bg-base-200">
+        <div class="hero-content text-center">
+            <div class="max-w-md">
+                <h1 class="text-4xl font-bold">Recolectores</h1>
+                <p class="py-6">
+                    Administra los recolectores registrados en el sistema.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-base-100 shadow-xl mx-4 my-10 sm:mx-auto sm:w-3/4">
+        <div class="card-body">
+            <h2 class="card-title text-2xl">Añadir nuevo recolector</h2>
+            <div class="divider"></div>
+            <form method="POST" action="{% url 'administrador:add_recolector' %}">
+                {% csrf_token %}
+                <div class="flex items-center space-x-8 my-4">
+                    <p class="font-semibold">
+                        Email
+                    </p>
+                    <input type="email" name="email" placeholder="Ingrese el correo electrónico del recolector" class="input input-primary w-full" required />
+                </div>
+                <div class="flex items-center space-x-8 my-4">
+                    <p class="font-semibold">
+                        Nombre
+                    </p>
+                    <input type="text" name="nombre" placeholder="Ingrese el nombre del recolector" class="input input-primary w-full" required />
+                </div>
+                <div class="flex items-center space-x-8 my-4">
+                    <p class="font-semibold">
+                        Apellido
+                    </p>
+                    <input type="text" name="apellido" placeholder="Ingrese el apellido del recolector" class="input input-primary w-full" required />
+                </div>
+                <div class="flex items-center space-x-8 my-4">
+                    <p class="font-semibold">
+                        Contraseña
+                    </p>
+                    <input type="password" name="password" placeholder="Ingrese la contraseña para acceder al sistema" class="input input-primary w-full" required />
+                </div>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-8 my-4">
+                    <p class="font-semibold">Puntos de recolección</p>
+                    <div class="relative w-full">
+                        <button id="dropdownButton" type="button" class="select select-primary w-full py-2 px-3 flex justify-between items-center">
+                            <span id="dropdownLabel" class="text-base">Seleccione un punto</span>
+                            <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div id="dropdownMenu" class="absolute z-10 mt-1 w-full bg-white rounded-md shadow-lg hidden">
+                            <ul class="py-1 text-sm text-gray-700" aria-labelledby="dropdownButton">
+                                {% for m in context.puntos %}
+                                    <li>
+                                        <label class="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                                            <input type="checkbox" class="mr-2 checkbox checkbox-primary" name="puntos" value="{{ m.id }}"> {{ m.nombre }}
+                                        </label>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                {% if messages %}
+                    {% for message in messages %}
+                    <div role="alert" class="alert alert-error mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>{{ message }}</span>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+
+                <div class="card-actions justify-end">
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <h2 class="text-2xl font-bold text-center my-4">Listado de Recolectores registrados</h2>
+    {% if context.recolectores %}
+        <div class="overflow-x-auto my-10">
+            <table class="table">
+                <thead class="bg-primary">
+                    <tr>
+                        <th class="text-center">
+                            <div class="badge badge-primary-content">
+                                Email
+                            </div>
+                        </th>
+                        <th class="text-center">
+                            <div class="badge badge-primary-content">
+                                Nombre completo
+                            </div>
+                        </th>
+                        <th class="text-center">
+                            <div class="badge badge-primary-content">
+                                Puntos asignados
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in context.recolectores %}
+                        <tr>
+                            <td class="text-center">
+                                {{ r.email }}
+                            </td>
+                            <td class="text-center">
+                                {{ r.nombre }}
+                            </td>
+                            <td class="text-center">
+                                <ul>
+                                    {% for p in r.puntos %}
+                                        <li>
+                                            - {{ p.nombre }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div role="alert" class="alert bg-primary-content my-10 sm:w-1/2 mx-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info h-8 w-8 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span class="font-bold text-xl">Aún no se han registrado recolectores en el proyecto.</span>
+        </div>
+    {% endif %}
+{% endblock content %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script>
+        const dropdownButton = document.getElementById('dropdownButton');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        const checkboxes = dropdownMenu.querySelectorAll('input[type="checkbox"]');
+        const dropdownLabel = document.getElementById('dropdownLabel');
+        const selectedMaterials = new Set();
+    
+        // Toggle dropdown visibility
+        dropdownButton.addEventListener('click', function() {
+            dropdownMenu.classList.toggle('hidden');
+        });
+    
+        // Update selected values in dropdown label and handle selections
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (checkbox.checked) {
+                    selectedMaterials.add(checkbox.value);
+                } else {
+                    selectedMaterials.delete(checkbox.value);
+                }
+    
+                const selectedOptions = Array.from(selectedMaterials).map(value => {
+                    const checkbox = document.querySelector(`input[value="${value}"]`);
+                    return checkbox ? checkbox.parentElement.textContent.trim() : '';
+                });
+    
+                dropdownLabel.textContent = selectedOptions.length > 0 ? selectedOptions.join(', ') : 'Seleccione un material';
+            });
+        });
+    
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!dropdownButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                dropdownMenu.classList.add('hidden');
+            }
+        });
+    </script>
+{% endblock scripts %}

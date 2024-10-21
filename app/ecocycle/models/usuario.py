@@ -10,7 +10,7 @@ class Usuario(CustomUser):
         abstract = True
 
     def __str__(self) -> str:
-        return self.nombre + ' ' + self.apellido
+        return f'{self.__class__.__name__} {self.id}: {self.nombre} {self.apellido}'
     
     def save(self, *args, **kwargs):
         if not self.username:
