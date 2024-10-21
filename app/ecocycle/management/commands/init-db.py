@@ -1,4 +1,5 @@
 import datetime
+from django.utils import timezone
 from decimal import Decimal
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -34,9 +35,10 @@ class Command(BaseCommand):
 
     def reset_database(self):
         Pedido.objects.all().delete()
-        Punto.objects.all().delete()
-        Material.objects.all().delete()
         RecoleccionMaterial.objects.all().delete()
+        Material.objects.all().delete()
+        Punto.objects.all().delete()
+        Centro.objects.all().delete()
         CustomUser.objects.all().delete()
 
     def create_example_data(self):
@@ -83,13 +85,16 @@ class Command(BaseCommand):
         # Recolecciones
         rc1 = r1.recolecciones.create(
             semana=datetime.date(2024, 10, 7),
-            pago=sum([m1.precio, m2.precio, m3.precio]),
-            observaciones='Ninguna'
+            observaciones='Ninguna',
+            notificacion=False,
+            finalizada=True
         )
-        RecoleccionMaterial.objects.create(recoleccion=rc1, material=m1, cantidad=1)
-        RecoleccionMaterial.objects.create(recoleccion=rc1, material=m2, cantidad=2)
-        RecoleccionMaterial.objects.create(recoleccion=rc1, material=m3, cantidad=3)
-        Pedido.objects.create(deposito=d1, centro=None, material=m1, cantidad=3)
+        rm1= RecoleccionMaterial.objects.create(recoleccion=rc1, material=m1, punto=p1, cantidad_recolectada=1, cantidad_real=1)
+        rm2 = RecoleccionMaterial.objects.create(recoleccion=rc1, material=m2, punto=p1, cantidad_recolectada=2, cantidad_real=2)
+        rm3 = RecoleccionMaterial.objects.create(recoleccion=rc1, material=m3, punto=p1, cantidad_recolectada=3, cantidad_real=3)
+        rc1.pago = sum([rm1.material.precio * rm1.cantidad_real, rm2.material.precio * rm2.cantidad_real, rm3.material.precio * rm3.cantidad_real])
+        rc1.save()
+        Pedido.objects.create(deposito=d1, centro=None, material=m1, cantidad=3, fecha_solicitada=timezone.now() + datetime.timedelta(days=7))
 
         # Asignacion de Puntos a Recolectores
         r1.puntos.add(p1)

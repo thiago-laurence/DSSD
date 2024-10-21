@@ -8,9 +8,9 @@ class Centro(Lugar):
         dict = super().to_dict()
         dict['materiales'] = [
             {
-                'nombre': material.nombre,
-                'cantidad': material.centromaterial_set.get(centro=self).cantidad
-            } for material in self.materiales.all()
+                'nombre': cm.material.nombre,
+                'cantidad': str(cm.cantidad),
+            } for cm in self.centromaterial_set.all()
         ]
         
         return dict

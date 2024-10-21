@@ -6,18 +6,29 @@
 {% endblock title %}
 
 {% block content %}
-<div class="hero bg-base-200 py-20">
-    <div class="hero-content w-full flex flex-wrap gap-6 justify-center">
-        <div class="w-full flex justify-end mb-4 justify-center">
-            <a href="{% url 'centro:list_pedidos' %}" class="btn btn-success btn-sm">Pedidos Pendientes</a>
+<div class="hero bg-base-200">
+    <div class="hero-content text-center">
+        <div class="max-w-md">
+            <h1 class="text-4xl font-bold">Pedidos aceptados</h1>
+            <p class="py-6">
+                Pedidos tomados en espera para ser enviados a los depositos
+            </p>
+            <a href="{% url 'centro:list_pedidos' %}" class="btn btn-warning btn-sm text-white">Pedidos pendientes</a>
         </div>
+    </div>
+</div>
+<div class="hero bg-base-200">
+    <div class="hero-content w-full flex flex-wrap gap-6 justify-center">
         {% if pedidos %}
             {% for pedido in pedidos %}
-                <div class="card w-96 bg-base-100 shadow-xl">
+                <div class="card w-1/3 bg-base-100 shadow-xl">
                     <div class="card-body">
                         <h2 class="card-title">Pedido #{{ pedido.id }}</h2>
                         <p>Material: {{ pedido.material.nombre }}</p>
                         <p>Cantidad: {{ pedido.cantidad }} Kg</p>
+                        <p>Fecha de creación: {{ pedido.fecha_creacion }}</p>
+                        <p>Fecha solicitada: {{ pedido.fecha_solicitada }}</p>
+                        <p>Fecha de aceptación: {{ pedido.fecha_reserva }}</p>
 
                         <div class="card-actions justify-end">
                             <form action="{% url 'centro:enviar_pedido' %}" method="POST">
@@ -29,6 +40,7 @@
                     </div>
                 </div>
             {% endfor %}
+            {% include 'components/paginator.html' with view=view page=page page_range=page_range %}
         {% else %}
             <p>No hay pedidos por enviar en este momento.</p>
         {% endif %}

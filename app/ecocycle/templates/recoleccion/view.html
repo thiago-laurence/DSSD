@@ -13,7 +13,7 @@
                 {% csrf_token %}
                 <div class="flex flex-col md:flex-row justify-between items-center">
                     <button type="button" class="btn btn-sm btn-neutral mb-2 lg:mb-0">
-                        Numero de recoleccion
+                        Número de recoleccion
                         <div class="badge badge-primary-content">{{ context.recoleccion.id }}</div>
                     </button>
                     {% if context.recoleccion.finalizada %}
@@ -38,18 +38,42 @@
                         <div class="badge badge-primary-content">{{ context.recoleccion.semana }}</div>
                     </button>
                 </div>
-                <p class="my-4">
+                <div class="divider divider-primary"></div>
+                <p class="my-4 font-semibold">
                     Materiales recolectados
                 </p>
                 {% for m in context.recoleccion.materiales %}    
                     <div class="flex flex-col sm:flex-row items-center gap-2 my-4">
-                        <select class="select select-bordered w-full" name="material">
-                            <option selected disabled>{{ m.material.nombre }}</option>
-                        </select>
-                        <label class="input input-bordered flex items-center gap-2 w-full">
-                            <p class="grow">{{ m.cantidad }}</p>
-                            <!-- <input type="number" class="grow" placeholder="{{ m.cantidad }}" name="cantidad" required /> -->
-                            <span class="badge badge-info">Kg</span>
+                        <label class="form-control w-full max-w-xs">
+                            <div class="label">
+                              <span class="label-text">Material</span>
+                            </div>
+                            <select class="select select-bordered w-full max-w-xs">
+                                <option selected disabled>{{ m.material.nombre }}</option>
+                            </select>
+                            <input type="hidden" name="materiales" value="{{ m.material.id }}">
+                        </label>
+                        <label class="form-control w-full max-w-xs">
+                            <div class="label">
+                              <span class="label-text">Cantidad recolectada</span>
+                            </div>
+                            <label class="input input-bordered flex items-center gap-2 w-full">
+                                <p class="grow">{{ m.cantidad_recolectada }}</p>
+                                <span class="badge badge-info">Kg</span>
+                            </label>
+                        </label>
+                        <label class="form-control w-full max-w-xs">
+                            <div class="label">
+                              <span class="label-text">Cantidad real</span>
+                            </div>
+                            {% if m.cantidad_real %}
+                                <label class="input input-bordered flex items-center gap-2 w-full">
+                                    <p class="grow">{{ m.cantidad_real }}</p>
+                                    <span class="badge badge-info">Kg</span>
+                                </label>
+                            {% else %}
+                                <input type="number" name="cantidad_real" placeholder="" required min="0" max="9999999999.99" class="input input-bordered w-full max-w-xs" />
+                            {% endif %}
                         </label>
                     </div>
                     <div class="divider"></div>
@@ -66,7 +90,11 @@
                     placeholder="Observaciones">{{ context.recoleccion.observaciones }}</textarea>
                 
                 <input type="hidden" name="id_recoleccion" value="{{ context.recoleccion.id }}">
-                <button type="submit" class="btn btn-primary w-full mt-4">Enviar</button>
+                
+                {% if not context.recoleccion.materiales.0.cantidad_real %}      
+                    <button type="submit" class="btn btn-primary w-full mt-4">Enviar</button>
+                {% endif %}
+                
                 <a href="{% url 'centro:index' %}">
                     <button type="button" class="btn btn-neutral mt-4">Volver</button>
                 </a>
