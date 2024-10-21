@@ -35,18 +35,14 @@ def view_perfil(request):
 def list_pedidos(request):
     page = int(request.GET.get('page', 1))
     per_page = 3
-    pedidos = Pedido.objects.select_related('deposito',
-     'centro', 'material').order_by('-fecha_creacion') # Lista de pedidos
-
-    if pedidos:
-        pedidos_sin_centro = [pedido for pedido in pedidos if pedido.centro is None]
-        paginator = Paginator(pedidos_sin_centro, per_page)
-        try:
-            pedidos_sin_centro = paginator.page(page)
-        except EmptyPage:
-            pedidos_sin_centro = paginator.page(paginator.num_pages)
-    else:
-        pedidos_sin_centro = []
+    pedidos = Pedido.objects.filter(centro__isnull=True).select_related('deposito',
+     'centro', 'material').order_by('-fecha_creacion')
+    
+    paginator = Paginator(pedidos, per_page)
+    try:
+        pedidos_sin_centro = paginator.page(page)
+    except EmptyPage:
+        pedidos_sin_centro = paginator.page(paginator.num_pages)
 
     context = {
         'pedidos': pedidos_sin_centro,
@@ -85,17 +81,13 @@ def list_pedidos_aceptados(request):
     page = int(request.GET.get('page', 1))
     per_page = 3
     centro = get_object_or_404(Centro, id=request.session['user']['id'])
-    pedidos = Pedido.objects.filter(centro=centro)
-
-    if pedidos:
-        pedidos_pendientes_envio = [pedido for pedido in pedidos if pedido.fecha_envio is None]
-        paginator = Paginator(pedidos_pendientes_envio, per_page)
-        try:
-            pedidos_pendientes_envio = paginator.page(page)
-        except EmptyPage:
-            pedidos_pendientes_envio = paginator.page(paginator.num_pages)
-    else:
-        pedidos_pendientes_envio = []
+    pedidos = Pedido.objects.filter(centro=centro, fecha_envio__isnull=True)
+    
+    paginator = Paginator(pedidos, per_page)
+    try:
+        pedidos_pendientes_envio = paginator.page(page)
+    except EmptyPage:
+        pedidos_pendientes_envio = paginator.page(paginator.num_pages)
     
     context = {
         'pedidos': pedidos_pendientes_envio,
