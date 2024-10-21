@@ -24,15 +24,21 @@
       </div>
     {% endif %}
 
-    <div class="flex items-center justify-center pt-10">
-      <a href="{% url 'recolector:index' %}" class="btn bg-white-500 hover:bg-green-700 text-green-500 font-bold rounded-xl text-3xl inline-block button floating">
-        Cargar Materiales
+    <div class="flex items-center justify-center" style="margin-bottom: 2rem;">
+      <a href="{% url 'recolector:index' %}" class="btn bg-white-500 hover:bg-green-700 text-green-500 font-bold rounded-xl text-2xl button floating">
+      Cargar Materiales
       </a>
     </div>
 
-    <div class="flex items-center justify-center pt-10">
-      <a href="{% url 'centro:index' %}" class="btn bg-white-500 hover:bg-green-700 text-green-500 font-bold rounded-xl text-3xl inline-block button floating">
-        Verificar Entrega
+    <div class="flex items-center justify-center" style="margin-bottom: 2rem;">
+      <a href="{% url 'centro:index' %}" class="btn bg-white-500 hover:bg-green-700 text-green-500 font-bold rounded-xl text-2xl button floating">
+      Verificar Entrega
+      </a>
+    </div>
+    
+    <div class="flex items-center justify-center" style="margin-bottom: 2rem;">
+      <a href="{% url 'centro:list_pedidos' %}" class="btn bg-white-500 hover:bg-green-700 text-green-500 font-bold rounded-xl text-2xl button floating">
+      Pedidos
       </a>
     </div>
 

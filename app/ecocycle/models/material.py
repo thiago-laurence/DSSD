@@ -8,7 +8,7 @@ class Material(models.Model):
         db_table = 'material'
 
     def __str__(self) -> str:
-        return self.nombre
+        return f'{self.id} {self.nombre}'
     
     def to_dict(self):
         return {

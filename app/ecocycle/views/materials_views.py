@@ -1,6 +1,6 @@
 from decimal import Decimal
 from django.shortcuts import render, redirect
-from . import api_views
+from . import bonita_views
 from django.http import JsonResponse
 from ..models.material import Material
 from ..models.recolector import Recolector
@@ -20,7 +20,7 @@ def index(request):
     return render(request, 'materials/index.html')
 
 def send(request):
-    api_views.obtener_procesos(request)
+    bonita_views.obtener_procesos(request)
     if request.method == 'POST':
         _obtener_recoleccion(request)
         if request.POST.get('finalize_process') != 'on':

@@ -36,7 +36,7 @@
                 {% if request.session.user.materiales %}
                     {% for m in request.session.user.materiales %}
                         <tr class="hover:bg-primary-content">
-                            <td>{{ m.material }}</td>
+                            <td>{{ m.nombre }}</td>
                             <td>
                                 <span class="badge badge-info">{{ m.cantidad }} Kg</span>
                             </td>

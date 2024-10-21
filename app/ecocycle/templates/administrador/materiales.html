@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="hero bg-base-200">
+        <div class="hero-content text-center">
+            <div class="max-w-md">
+                <h1 class="text-4xl font-bold">Materiales reciclables</h1>
+                <p class="py-6">
+                    Administra los materiales disponibles para recolección registrados en el sistema.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-base-100 shadow-xl mx-4 my-10 sm:mx-auto sm:w-3/4">
+        <div class="card-body">
+            <h2 class="card-title text-2xl">Añadir nuevo material</h2>
+            <div class="divider"></div>
+            <form method="POST" action="{% url 'administrador:add_material' %}">
+                {% csrf_token %}
+                <div class="flex items-center space-x-8">
+                    <p class="font-semibold">
+                        Nombre
+                    </p>
+                    <input type="text" name="nombre" placeholder="Ingrese el nombre del material" class="input input-primary w-full" required />
+                </div>
+                <div class="flex items-center space-x-8 my-4">
+                    <p class="font-semibold">
+                        Precio (Kg)
+                    </p>
+                    <label class="input input-primary flex items-center gap-2 w-full">
+                        <input type="number" class="grow w-full" name="precio" placeholder="1.0" min="0.0" max="9999999999.99" required />
+                        <span class="badge badge-info text-white">$</span>
+                    </label>
+                </div>
+
+                {% if messages %}
+                    {% for message in messages %}
+                    <div role="alert" class="alert alert-error mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>{{ message }}</span>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+
+                <div class="card-actions justify-end">
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <h2 class="text-2xl font-bold text-center my-4">Listado de Materiales registrados</h2>
+    {% if context.materiales %}
+        <div class="overflow-x-auto my-10">
+            <table class="table">
+                <thead class="bg-primary">
+                    <tr>
+                        <th class="text-center">
+                            <div class="badge badge-primary-content">
+                                Nombre
+                            </div>
+                        </th>
+                        <th class="text-center">
+                            <div class="badge badge-primary-content">
+                                Precio
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in context.materiales %}
+                        <tr>
+                            <td class="text-center">{{ r.nombre }}
+                            </td>
+                            <td class="text-center">{{ r.precio }} (Kg)
+                                <span class="badge badge-info text-white font-bold ml-2">
+                                    $
+                                </span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div role="alert" class="alert bg-primary-content my-10 sm:w-1/2 mx-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info h-8 w-8 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span class="font-bold text-xl">Aún no se han registrado materiales para recolectar.</span>
+        </div>
+    {% endif %}
+{% endblock content %}

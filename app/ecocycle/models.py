@@ -9,3 +9,4 @@ from models.material import Material
 from models.recoleccion import Recoleccion
 from models.recoleccion_material import RecoleccionMaterial
 from ecocycle.models.centro_material import CentroMaterial
+from ecocycle.models.pedido import Pedido
