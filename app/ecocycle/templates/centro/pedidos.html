@@ -37,7 +37,7 @@
                         <p>Material: {{ pedido.material.nombre }}</p>
                         <p>Cantidad: {{ pedido.cantidad }} Kg</p>
                         <p>Fecha de creación: {{ pedido.fecha_creacion }}</p>
-                        <p>Fecha solicitada: {{ pedido.fecha_solicitada }}</p>
+                        <p>Fecha solicitada: {{ pedido.fecha_solicitada|date:"b. d, Y"|capfirst }}</p>
 
                         <div class="card-actions justify-end">
                             <form action="{% url 'centro:assign_pedido' %}" method="POST">

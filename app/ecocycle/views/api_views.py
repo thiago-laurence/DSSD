@@ -1,4 +1,5 @@
 from decimal import Decimal
+from datetime import datetime
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
@@ -30,15 +31,26 @@ def add_pedido(request):
     deposito = get_object_or_404(Deposito, id=request.data.get('deposito'))
     material = get_object_or_404(Material, nombre=request.data.get('material'))
     cantidad = request.data.get('cantidad')
+    fecha_solicitada = request.data.get('fecha_solicitada')
+
     try:
         cantidad = Decimal(cantidad)
     except:
         return JsonResponse({"error": "El campo Cantidad debe ser un número decimal."}, status=status.HTTP_400_BAD_REQUEST)
     
+    try:
+        fecha_solicitada = datetime.strptime(fecha_solicitada, '%Y-%m-%d')
+    except:
+        return JsonResponse({"error": "El campo Fecha solicitada debe tener el formato YYYY-MM-DD."}, status=status.HTTP_400_BAD_REQUEST)
+
+    if fecha_solicitada <= datetime.now():
+        return JsonResponse({"error": "La fecha solicitada debe ser posterior a la fecha de creación."}, status=status.HTTP_400_BAD_REQUEST)
+    
     pedido = Pedido.objects.create(
         deposito=deposito,
         material=material,
-        cantidad=cantidad
+        cantidad=cantidad,
+        fecha_solicitada=fecha_solicitada
     )
     serializer = PedidoSerializer(pedido)
 
