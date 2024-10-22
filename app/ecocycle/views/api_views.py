@@ -43,6 +43,9 @@ def add_pedido(request):
     except:
         return JsonResponse({"error": "El campo Fecha solicitada debe tener el formato YYYY-MM-DD."}, status=status.HTTP_400_BAD_REQUEST)
 
+    if fecha_solicitada <= datetime.now():
+        return JsonResponse({"error": "La fecha solicitada debe ser posterior a la fecha de creación."}, status=status.HTTP_400_BAD_REQUEST)
+    
     pedido = Pedido.objects.create(
         deposito=deposito,
         material=material,

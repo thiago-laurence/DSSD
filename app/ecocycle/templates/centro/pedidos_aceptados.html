@@ -27,7 +27,7 @@
                         <p>Material: {{ pedido.material.nombre }}</p>
                         <p>Cantidad: {{ pedido.cantidad }} Kg</p>
                         <p>Fecha de creación: {{ pedido.fecha_creacion }}</p>
-                        <p>Fecha solicitada: {{ pedido.fecha_solicitada }}</p>
+                        <p>Fecha solicitada: {{ pedido.fecha_solicitada|date:"b. d, Y"|capfirst }}</p>
                         <p>Fecha de aceptación: {{ pedido.fecha_reserva }}</p>
 
                         <div class="card-actions justify-end">
