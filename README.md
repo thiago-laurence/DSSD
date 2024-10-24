@@ -7,44 +7,12 @@ La misma es una aplicación web correspondiente al proyecto municipal "Ecocycle"
 
 Enlace de sistema en producción sobre PaaS Render [Ecocycle](https://django-app-aer5.onrender.com).
 
-## Endpoints de la API
+## Documentación de API en Swagger
 
-### 1. Agregar Pedido
+- **Archivo:** `openapi.yml`
+- **URL para ver el documento Swagger:** [Swagger Editor](https://editor.swagger.io/)
 
-- **Método:** POST  
-- **URI:** `/ecocycle/api/pedidos/add`  
-- **PROD:** https://django-app-aer5.onrender.com/ecocycle/api/pedidos/add
-- **Estructura de cuerpo de la solicitud:**
-
-    ```json
-    {
-      "deposito": 88,
-      "material": "Acero",
-      "cantidad": 100
-    }
-    ```
-
-### 2. Obtener Usuario
-
-- **Método:** GET  
-- **URI:** `/ecocycle/api/user/`  
-- **PROD:** https://django-app-aer5.onrender.com/ecocycle/api/user/
-
-### 3. Iniciar Sesión
-
-- **Método:** POST  
-- **URI:** `/ecocycle/api/login/`  
-- **PROD:** https://django-app-aer5.onrender.com/ecocycle/api/login/
-- **Estructura de cuerpo de la solicitud:**
-
-    ```json
-    {
-      "email": "walter.bates@example.com",
-      "password": "bpm"
-    }
-    ```
-
-## Usuarios
+## Credenciales de Usuarios
 
 - **Usuario con rol Recolector:**
   - **Email:** walter.bates@example.com
@@ -58,11 +26,6 @@ Enlace de sistema en producción sobre PaaS Render [Ecocycle](https://django-app
   - **Email:** admin1@example.com
   - **Contraseña:** 123
 
-## Documentación Swagger
-
-- **Archivo:** `openapi.yml`  
-- **URL para ver el documento Swagger:** [Swagger Editor](https://editor.swagger.io/)
-
 ---
 
 ¡Gracias por utilizar EcoCycle! Si tienes alguna pregunta, no dudes en contactarnos.
@@ -72,4 +35,6 @@ Enlace de sistema en producción sobre PaaS Render [Ecocycle](https://django-app
 <center>
     <img width="200" src="https://1000marcas.net/wp-content/uploads/2021/06/Django-Logo.png" alt="Django logo" />
 </center>
-
+<center>
+    <img width="200" src="https://es.bonitasoft.com/themes/bonitasoft2022/images/logo_bonitasoft.png" alt="BonitaSoft logo" />
+</center>
