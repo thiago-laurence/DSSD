@@ -77,18 +77,17 @@ paths:
                 deposito:
                   type: integer
                   format: int64
-                  example: 12
+                  example: 57
                 material:
                   type: string
                   description: Nombre del material
                   example: Acero
                 cantidad:
-                  type: integer
-                  format: int64
-                  example: 18
+                  type: string
+                  example: "5.0"
                 fecha_solicitada:
                   type: string
-                  example: 2018-12-18
+                  example: 2024-12-1
           application/x-www-form-urlencoded:
             schema:
               required:
@@ -369,11 +368,11 @@ components:
         email:
           type: string
           description: Email del usuario
-          example: mgallardo@gmail.com
+          example: deposito1@example.com
         password:
           type: string
           description: Contraseña del usuario
-          example: 091218
+          example: 123
     Page:
       type: object
       properties:
