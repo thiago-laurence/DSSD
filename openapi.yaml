@@ -71,6 +71,7 @@ paths:
                 - deposito
                 - material
                 - cantidad
+                - fecha_solicitada
               type: object
               properties:
                 deposito:
@@ -85,12 +86,16 @@ paths:
                   type: integer
                   format: int64
                   example: 18
+                fecha_solicitada:
+                  type: string
+                  example: 2018-12-18
           application/x-www-form-urlencoded:
             schema:
               required:
                 - deposito
                 - material
                 - cantidad
+                - fecha_solicitada
               type: object
               properties:
                 deposito:
@@ -105,6 +110,9 @@ paths:
                   type: integer
                   format: int64
                   example: 18
+                fecha_solicitada:
+                  type: string
+                  example: 2018-12-18
         required: true
       responses:
         '201':
@@ -114,7 +122,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Pedido'
         '400':
-          description: El campo Cantidad debe ser decimal
+          description: El campo Cantidad debe ser decimal | El campo Fecha solicitada debe tener el formato YYYY-MM-DD
         '404':
           description: El campo Deposito o Material no existen sobre la consulta realizada
         '401':
