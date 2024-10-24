@@ -25,6 +25,10 @@ Enlace de sistema en producción sobre PaaS Render [Ecocycle](https://django-app
 - **Usuario con rol Administrador:**
   - **Email:** admin1@example.com
   - **Contraseña:** 123
+  
+- **Usuario con rol Deposito:**
+  - **Email:** deposito1@example.com
+  - **Contraseña:** 123
 
 ---
 
