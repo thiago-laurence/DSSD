@@ -1,5 +1,6 @@
 from decimal import Decimal
-from django.shortcuts import redirect, render
+from django.db.models import Sum, Count
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib import messages
 from rest_framework.decorators import api_view
 from ecocycle.models.punto import Punto
@@ -11,8 +12,24 @@ from ecocycle.helpers.auth import login_required
 @api_view(['GET'])
 @login_required(subclase='administrador')
 def index(request):
-  
-    return render(request, 'administrador/index.html')
+    context = {
+        'materiales': Material.objects.all().order_by('nombre'),
+    }
+
+    email_recolector = request.GET.get('email_recolector', '')
+    if email_recolector: 
+        if Recolector.objects.filter(email=email_recolector).exists():
+            context['mvp_recolector'] = Recolector.objects.filter(email=email_recolector).annotate(
+                total_materiales=Sum('recolecciones__recoleccionmaterial__cantidad_real'),
+                cantidad_recolecciones=Count('recolecciones', distinct=True)
+            ).first()
+        else: messages.error(request, "No existe un recolector con el email ingresado")
+    else: context['mvp_recolector'] = Recolector.objects.annotate(
+                total_materiales=Sum('recolecciones__recoleccionmaterial__cantidad_real'),
+                cantidad_recolecciones=Count('recolecciones', distinct=True)
+            ).filter(total_materiales__isnull=False).order_by('-total_materiales').first()
+
+    return render(request, 'administrador/index.html', {'context': context })
 
 @api_view(['GET'])
 @login_required(subclase='administrador')
