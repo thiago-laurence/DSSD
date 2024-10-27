@@ -1,7 +1,7 @@
 from django.db import models
 
 class RecoleccionMaterial(models.Model):
-    material = models.ForeignKey('Material', on_delete=models.PROTECT)
+    material = models.ForeignKey('Material', on_delete=models.PROTECT, related_name='materiales_recoleccion')
     recoleccion = models.ForeignKey('Recoleccion', on_delete=models.PROTECT)
     punto = models.ForeignKey('Punto', on_delete=models.PROTECT)
     cantidad_recolectada = models.DecimalField(max_digits=10, decimal_places=2)
