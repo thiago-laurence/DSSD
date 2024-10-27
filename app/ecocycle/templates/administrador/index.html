@@ -137,18 +137,18 @@
                             <button type="submit" class="btn btn-primary">Ingresar</button>
                         </div>
                     </form>
-                    {% if messages %}
-                        {% for message in messages %}
-                        <div role="alert" class="alert alert-error mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span>{{ message }}</span>
-                        </div>
-                        {% endfor %}
-                    {% endif %}
                 </div>
             </div>
+            {% if messages %}
+                {% for message in messages %}
+                <div role="alert" class="alert alert-error mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{{ message }}</span>
+                </div>
+                {% endfor %}
+            {% endif %}
             <div class="stats shadow-lg mt-4">
                 <div class="stat">
                   <div class="stat-figure text-secondary">
@@ -193,21 +193,18 @@
         <div class="card-body">
             <div class="stats stats-vertical lg:stats-horizontal shadow-lg mt-4">
                 <div class="stat">
-                  <div class="stat-title">Promedio de casos exitosos</div>
-                  <div class="stat-value">31K</div>
-                  <div class="stat-desc">Jan 1st - Feb 1st</div>
+                  <div class="stat-title">Promedio de pedidos aceptados</div>
+                  <div class="stat-value">{{ context.promedio_pedidos|floatformat:2 }} %</div>
                 </div>
               
                 <div class="stat">
                   <div class="stat-title">Promedio de recolecciones sin diferencias</div>
-                  <div class="stat-value">4,200</div>
-                  <div class="stat-desc">↗︎ 400 (22%)</div>
+                  <div class="stat-value">{{ context.promedio_pedidos_sin_diferencias|floatformat:2 }} %</div>
                 </div>
               
                 <div class="stat">
                   <div class="stat-title">Promedio de entregas a tiempo</div>
-                  <div class="stat-value">1,200</div>
-                  <div class="stat-desc">↘︎ 90 (14%)</div>
+                  <div class="stat-value">{{ context.promedio_pedidos_a_tiempo|floatformat:2 }} %</div>
                 </div>
             </div>
         </div>

@@ -1,12 +1,14 @@
 from decimal import Decimal
-from django.db.models import Sum, Count
-from django.shortcuts import redirect, render, get_object_or_404
+from django.db.models import Sum, Count, Q, F
+from django.shortcuts import redirect, render
 from django.contrib import messages
 from rest_framework.decorators import api_view
 from ecocycle.models.punto import Punto
+from ecocycle.models.pedido import Pedido
 from ecocycle.models.material import Material
 from ecocycle.models.centro import Centro
 from ecocycle.models.recolector import Recolector
+from ecocycle.models.recoleccion_material import RecoleccionMaterial
 from ecocycle.helpers.auth import login_required
 
 @api_view(['GET'])
@@ -36,11 +38,38 @@ def index(request):
                 total_materiales=Sum('materiales_recoleccion__cantidad_real'),
                 cantidad_recolecciones=Count('materiales_recoleccion', distinct=True)
             ).first()
-        else: messages.error(request, "No existe un material con el id ingresado")
+        else: messages.error(request, "No existe el material seleccionado")
     else: context['mvp_material'] = Material.objects.annotate(
                 total_materiales=Sum('materiales_recoleccion__cantidad_real'),
                 cantidad_recolecciones=Count('materiales_recoleccion', distinct=True)
             ).filter(total_materiales__isnull=False).order_by('-total_materiales').first()
+    
+    result = Pedido.objects.aggregate(
+        pedidos_con_centro=Count('id', filter=~Q(centro=None)),
+        total_pedidos=Count('id')
+    )
+    context['promedio_pedidos'] = (
+        (result['pedidos_con_centro'] / result['total_pedidos']) * 100 
+        if result['total_pedidos'] > 0 else 0
+    )
+
+    result = RecoleccionMaterial.objects.aggregate(
+        recolecciones_coincidentes=Count('id', filter=Q(cantidad_recolectada=F('cantidad_real'))),
+        total_recolecciones=Count('id')
+    )
+    context['promedio_pedidos_sin_diferencias'] = (
+        (result['recolecciones_coincidentes'] / result['total_recolecciones']) * 100
+        if result['total_recolecciones'] > 0 else 0
+    )
+
+    result = Pedido.objects.filter(centro__isnull=False).aggregate(
+        pedidos_a_tiempo=Count('id', filter=Q(fecha_envio__lt=F('fecha_solicitada'))),
+        total_pedidos=Count('id')
+    )
+    context['promedio_pedidos_a_tiempo'] = (
+        (result['pedidos_a_tiempo'] / result['total_pedidos']) * 100
+        if result['total_pedidos'] > 0 else 0
+    )
 
     return render(request, 'administrador/index.html', {'context': context })
 
