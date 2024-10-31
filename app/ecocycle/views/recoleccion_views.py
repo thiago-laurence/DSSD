@@ -5,6 +5,7 @@ from ecocycle.models.recoleccion import Recoleccion
 from ecocycle.models.centro import Centro
 from ecocycle.models.centro_material import CentroMaterial
 from ecocycle.helpers.auth import login_required
+from ecocycle.views.bonita_views import consolidacion_materiales_entregados
 
 @api_view(['GET'])
 @login_required(subclase='centro')
@@ -41,5 +42,6 @@ def update_recoleccion(request):
         i += 1
     recoleccion.save()
     request.session.modified = True
+    consolidacion_materiales_entregados(request)
     
     return redirect('recoleccion:view', id_recoleccion=recoleccion.id)

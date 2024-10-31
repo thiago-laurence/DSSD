@@ -8,7 +8,7 @@ from ecocycle.models.recoleccion import Recoleccion
 from ecocycle.models.recoleccion_material import RecoleccionMaterial
 from ecocycle.models.material import Material
 from ecocycle.helpers.auth import login_required
-# from ecocycle.views.bonita_views import obtener_procesos
+from ecocycle.views.bonita_views import carga_material_recolectado
 
 @api_view(['GET'])
 @login_required(subclase='recolector')
@@ -78,8 +78,8 @@ def add_recoleccion(request):
     recoleccion.pago = material.precio * rm.cantidad_recolectada if recoleccion.pago is None else recoleccion.pago + (material.precio * rm.cantidad_recolectada)
     recoleccion.materiales.add(material)
     
-    # obtener_procesos(request) # Usa la API de Bonita
-    if request.POST.get("finalize_process"):
+    carga_material_recolectado(request) # Usa la API de Bonita
+    if request.POST.get("finalize_task"):
         recoleccion.finalizada = True
     
     recoleccion.save()
