@@ -68,6 +68,8 @@ def add_recoleccion(request):
         recoleccion = Recoleccion.objects.get(id=request.POST.get("id_recoleccion"))
     else:
         recoleccion = Recoleccion.objects.create(recolector_id=request.session['user']['id'])
+        request.session['id_recoleccion'] = recoleccion.id
+
     
     try:
         rm = RecoleccionMaterial.objects.create(recoleccion=recoleccion, material=material, punto=punto, cantidad_recolectada=Decimal(request.POST.get("cantidad_recolectada")))
@@ -78,10 +80,11 @@ def add_recoleccion(request):
     recoleccion.pago = material.precio * rm.cantidad_recolectada if recoleccion.pago is None else recoleccion.pago + (material.precio * rm.cantidad_recolectada)
     recoleccion.materiales.add(material)
     
-    carga_material_recolectado(request) # Usa la API de Bonita
     if request.POST.get("finalize_task"):
         recoleccion.finalizada = True
     
     recoleccion.save()
+
+    carga_material_recolectado(request) # Usa la API de Bonita
 
     return redirect('recolector:index')

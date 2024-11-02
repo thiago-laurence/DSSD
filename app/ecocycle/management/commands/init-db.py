@@ -63,8 +63,8 @@ class Command(BaseCommand):
         p2 = Punto.objects.create(nombre='Papelera 44', direccion='Av. 44', password='123', email='punto2@example.com')
 
         # Centros de acopio
-        c1 = Centro.objects.create(nombre='Centro de acopio La Plata', direccion='Av. 7 1850', password='123', email='centro1@example.com')
-        c2 = Centro.objects.create(nombre='Centro de acopio Albuquerque', direccion='308 Negra Arroyo Lane', password='123', email='centro2@example.com')
+        c1 = Centro.objects.create(nombre='Centro de acopio La Plata', direccion='Av. 7 1850', password='bpm', email='april.sanchez@example.com')
+        c2 = Centro.objects.create(nombre='Centro de acopio Albuquerque', direccion='308 Negra Arroyo Lane', password='bpm', email='hellen.kelly@example.com')
 
         # Depositos
         d1 = Deposito.objects.create(nombre='Deposito 1', direccion='13 y 52', password='123', email='deposito1@example.com')

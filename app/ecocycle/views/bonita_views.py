@@ -3,10 +3,10 @@ from django.http import JsonResponse
 import requests
 from django.shortcuts import render
 from os import environ as env
+from ecocycle.models.recoleccion import Recoleccion
 
 def index(request):
     obj = consolidacion_materiales_entregados(request)
-    print(obj)
     return render(request, 'api/index.html', {'obj': obj})
 
 def login_bonita(request):
@@ -64,22 +64,23 @@ def carga_material_recolectado(request):
         response = requests.get(url, headers=headers)
         
         if response.status_code == 200:
-            # Obtengo el id del proceso
-            process_id = response.json()[0]['id']
 
             # Antes de instanciar el proceso tengo que saber si no hay una instancia ya hecha para esa recolección:
-            if (request.session.get('recoleccion_id')):
-                case_id = request.session['recoleccion_id']
+            if (request.session.get('case_id')):
+                case_id = request.session['case_id']
 
                 # Obtengo el id de la tarea
                 url = f"http://localhost:8080/bonita/API/bpm/task?p=0&c=10&f=caseId={case_id}" 
                 response = requests.get(url, headers=headers)
                 task_id = response.json()[0]['id']
             else:
+                # Obtengo el id del proceso
+                process_id = response.json()[0]['id']
+
                 # Le pego a la API de Bonita que instancia el proceso
                 url = f"http://localhost:8080/bonita/API/bpm/process/{process_id}/instantiation" 
                 response = requests.post(url, headers=headers)
-                request.session['recoleccion_id'] = response.json()['caseId']
+                request.session['case_id'] = response.json()['caseId']
                 case_id = response.json()['caseId']
 
                 # Le pego a la API de Bonita que obtiene la tarea (task)
@@ -114,10 +115,15 @@ def carga_material_recolectado(request):
                 # Le pego a la API de Bonita que finaliza la tarea
                 url = f"http://localhost:8080/bonita/API/bpm/userTask/{task_id}/execution?assign=true"
                 requests.post(url, headers=headers)
+
+                # Almaceno el case_id en la BD
+                if request.POST.get("id_recoleccion"):
+                    recoleccion = Recoleccion.objects.get(id=request.POST.get("id_recoleccion"))
+                else:
+                    recoleccion = Recoleccion.objects.get(id=request.session["id_recoleccion"])
+                recoleccion.case_id = case_id
+                recoleccion.save()
             
-            url = f"http://localhost:8080/bonita/API/bpm/case?p=0&c=10"
-            response = requests.get(url, headers=headers)
-            print(response.json()[0])
 
             return JsonResponse(response.json(), safe=False)
         else:
@@ -128,11 +134,33 @@ def carga_material_recolectado(request):
         return JsonResponse({"error": "No se pudo autenticar con Bonita"}, status=400)
 
 def consolidacion_materiales_entregados(request):
-    headers = get_bonita_tokens(request) # Obtiene los tokens de la sesión, deberiamos cambiar las credenciales del centro para que coincidan con las de algun usuario de bonita
+    headers = get_bonita_tokens(request)
     username = request.session['user']['email'].split('@')[0]
-    print(headers)
 
     if headers:
-        None
+        # Obtengo el id de la tarea
+        recoleccion_id = request.POST.get('id_recoleccion')
+        id_case = int(Recoleccion.objects.get(id=recoleccion_id).case_id) 
+        url = f"http://localhost:8080/bonita/API/bpm/task?p=0&c=10&f=caseId={id_case}" 
+        response = requests.get(url, headers=headers)
+        task_id = response.json()[0]['id']
+        
+        # Le pego a la API de Bonita que obtiene el usuario
+        url = f"http://localhost:8080/bonita/API/identity/user?p=0&c=10&f=userName={username}" 
+        response_user = requests.get(url, headers=headers)
+        
+        user_id = response_user.json()[0]['id']
+        value = {
+            "assigned_id": f"{user_id}", 
+            "state": "ready",
+            #"assign": "true"
+        }
+        
+        # Le pego a la API de Bonita que le asigna la task al usuario
+        url = f"http://localhost:8080/bonita/API/bpm/userTask/{task_id}" 
+        requests.put(url, headers=headers, data=json.dumps(value))
+
+        url = f"http://localhost:8080/bonita/API/bpm/userTask/{task_id}/execution?assign=true"
+        requests.post(url, headers=headers)
     else:
         raise Exception("No se pudo autenticar con Bonita")

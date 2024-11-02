@@ -10,6 +10,7 @@ class Recoleccion(models.Model):
     observaciones = models.TextField(max_length=250, default='')
     finalizada = models.BooleanField(default=False)
     notificacion = models.BooleanField(default=False)
+    case_id = models.IntegerField(null=True)
     
     class Meta:
         db_table = 'recoleccion'
