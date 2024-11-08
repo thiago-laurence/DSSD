@@ -1,6 +1,5 @@
 from django.db import models
 from .usuario import Usuario
-from .recoleccion import Recoleccion
 
 class Recolector(Usuario):
     puntos = models.ManyToManyField('Punto', related_name='recolectores', blank=True)

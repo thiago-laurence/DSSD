@@ -50,7 +50,7 @@ class Command(BaseCommand):
 
         # Recolectores
         r1 = Recolector.objects.create(nombre='John', apellido='Doe', email='johndoe@example.com', password='123')
-        Recolector.objects.create(nombre='Miguel', apellido='Borja', email='dios@gmail.com', password='123')
+        r5 = Recolector.objects.create(nombre='Miguel', apellido='Borja', email='dios@gmail.com', password='123')
         Recolector.objects.create(nombre='Marcelo', apellido='Gallardo', email='sapardo@gmail.com', password='123')
 
         # Bonitos
@@ -94,6 +94,18 @@ class Command(BaseCommand):
         rm3 = RecoleccionMaterial.objects.create(recoleccion=rc1, material=m3, punto=p1, cantidad_recolectada=3, cantidad_real=3)
         rc1.pago = sum([rm1.material.precio * rm1.cantidad_real, rm2.material.precio * rm2.cantidad_real, rm3.material.precio * rm3.cantidad_real])
         rc1.save()
+        rc2 = r5.recolecciones.create(
+            semana=datetime.date(2024, 10, 14),
+            observaciones='Ninguna',
+            notificacion=False,
+            finalizada=True
+        )
+        rm4 = RecoleccionMaterial.objects.create(recoleccion=rc2, material=m2, punto=p1, cantidad_recolectada=5, cantidad_real=5)
+        rm5 = RecoleccionMaterial.objects.create(recoleccion=rc2, material=m3, punto=p1, cantidad_recolectada=5, cantidad_real=5)
+        rc2.pago = sum([rm4.material.precio * rm4.cantidad_real, rm5.material.precio * rm5.cantidad_real])
+        rc2.save()
+
+        # Pedidos
         Pedido.objects.create(deposito=d1, centro=None, material=m1, cantidad=3, fecha_solicitada=timezone.now() + datetime.timedelta(days=7))
 
         # Asignacion de Puntos a Recolectores
