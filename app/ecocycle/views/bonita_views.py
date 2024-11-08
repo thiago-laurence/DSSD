@@ -11,7 +11,10 @@ def index(request):
 
 def login_bonita(request):
     url = "http://localhost:8080/bonita/loginservice"
-    username = request.session['user']['email'].split('@')[0]
+    try:
+        username = request.session['user']['email'].split('@')[0]
+    except:
+        username = request.data.get("email").split('@')[0]
     password = env.get("BONITA_PASS")
     
     payload = {
@@ -164,3 +167,78 @@ def consolidacion_materiales_entregados(request):
         requests.post(url, headers=headers)
     else:
         raise Exception("No se pudo autenticar con Bonita")
+    
+def iniciar_sesion_dep(request):
+    headers = get_bonita_tokens(request) 
+    username = request.data.get("email").split('@')[0]
+
+    if headers:
+        # Le pego a la API de Bonita que busca el ID del proceso
+        url = "http://localhost:8080/bonita/API/bpm/process?f=name=Proceso%20de%20distribucion%20de%20materiales&p=0&c=10" 
+        response = requests.get(url, headers=headers)
+        
+        if response.status_code == 200:
+            # Obtengo el id del proceso
+            process_id = response.json()[0]['id']
+
+            # Le pego a la API de Bonita que instancia el proceso
+            url = f"http://localhost:8080/bonita/API/bpm/process/{process_id}/instantiation" 
+            response = requests.post(url, headers=headers)
+            #request.session['case_id'] = response.json()['caseId']
+            case_id = response.json()['caseId']
+
+            # Le pego a la API de Bonita que obtiene la tarea (task)
+            url = f"http://localhost:8080/bonita/API/bpm/task?p=0&c=10&f=caseId={case_id}" 
+            response = requests.get(url, headers=headers)
+            task_id = response.json()[0]['id'] # Este es el id de la tarea/task
+            # Le pego a la API de Bonita que obtiene el usuario
+            url = f"http://localhost:8080/bonita/API/identity/user?p=0&c=10&f=userName={username}" 
+            response_user = requests.get(url, headers=headers)
+            
+            user_id = response_user.json()[0]['id']
+            value = {
+                "assigned_id": f"{user_id}", 
+                "state": "ready",
+                #"assign": "true"
+            }
+            
+            # Le pego a la API de Bonita que le asigna la task al usuario
+            url = f"http://localhost:8080/bonita/API/bpm/userTask/{task_id}" 
+            requests.put(url, headers=headers, data=json.dumps(value))
+            url = f"http://localhost:8080/bonita/API/bpm/userTask/{task_id}/execution?assign=true"
+            requests.post(url, headers=headers)
+
+            return case_id
+        
+def fin_distribucion(request, ok):
+    headers = get_bonita_tokens(request) 
+    username = request.data.get("email").split('@')[0]
+
+    if headers:
+        case_id = request.headers.get('X-Case-ID')
+
+        # Le pego a la API de Bonita que obtiene la tarea (task)
+        url = f"http://localhost:8080/bonita/API/bpm/task?p=0&c=10&f=caseId={case_id}" 
+        response = requests.get(url, headers=headers)
+        task_id = response.json()[0]['id'] # Este es el id de la tarea/task
+        # Le pego a la API de Bonita que obtiene el usuario
+        url = f"http://localhost:8080/bonita/API/identity/user?p=0&c=10&f=userName={username}" 
+        response_user = requests.get(url, headers=headers)
+        
+        user_id = response_user.json()[0]['id']
+        value = {
+            "assigned_id": f"{user_id}", 
+            "state": "ready",
+            #"assign": "true"
+        }
+        
+        # Le pego a la API de Bonita que le asigna la task al usuario
+        url = f"http://localhost:8080/bonita/API/bpm/userTask/{task_id}" 
+        requests.put(url, headers=headers, data=json.dumps(value))
+
+        ok_value = {"type": "java.lang.String", "value": "verdadero" if ok else "falso"} 
+        url = f"http://localhost:8080/bonita/API/bpm/caseVariable/{case_id}/ok" 
+        requests.put(url, headers=headers, data=json.dumps(ok_value))
+
+        url = f"http://localhost:8080/bonita/API/bpm/userTask/{task_id}/execution?assign=true"
+        requests.post(url, headers=headers)

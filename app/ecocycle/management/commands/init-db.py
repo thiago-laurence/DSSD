@@ -67,7 +67,7 @@ class Command(BaseCommand):
         c2 = Centro.objects.create(nombre='Centro de acopio Albuquerque', direccion='308 Negra Arroyo Lane', password='bpm', email='hellen.kelly@example.com')
 
         # Depositos
-        d1 = Deposito.objects.create(nombre='Deposito 1', direccion='13 y 52', password='123', email='deposito1@example.com')
+        d1 = Deposito.objects.create(nombre='Deposito 1', direccion='13 y 52', password='bpm', email='misa.kumagai@example.com')
 
         # Materiales
         m1 = Material.objects.create(nombre='Aluminio', precio=Decimal(0.5))

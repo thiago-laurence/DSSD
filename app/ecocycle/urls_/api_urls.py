@@ -6,6 +6,7 @@ app_name = "api"
 urlpatterns = [
     path("login", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("login/refresh", TokenRefreshView.as_view(), name="token_refresh"),
+    path("login_deposito", views.login_deposito, name="login_deposito"),
     path("pedidos", views.get_pedidos, name="get_pedidos"),
     path('pedidos/add', views.add_pedido, name='add_pedido'),
     path('centros', views.get_centros, name='get_centros'),

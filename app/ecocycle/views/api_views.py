@@ -1,5 +1,6 @@
 from decimal import Decimal
 from datetime import datetime
+import requests
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
@@ -13,6 +14,7 @@ from ..models.material import Material
 from ..models.centro import Centro
 from ..serializers.centro import CentroSerializer
 from ..serializers.pedido import PedidoSerializer
+from ..views.bonita_views import iniciar_sesion_dep, fin_distribucion
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -81,6 +83,9 @@ def get_centros(request):
 
     serializer = CentroSerializer(result_page, many=True)
     
+    ok = True if serializer.data else False
+    fin_distribucion(request, ok)
+    
     return paginator.get_paginated_response(serializer.data)
 
 @csrf_exempt
@@ -101,3 +106,23 @@ def add_deposito(request):
         return JsonResponse({"error": "El email del deposito ya fue registrado."}, status=status.HTTP_409_CONFLICT)
     
     return JsonResponse({"message": 'El deposito fue registrado correctamente'}, status=status.HTTP_201_CREATED)
+
+@csrf_exempt
+@api_view(['POST'])
+def login_deposito(request):
+
+    url = "http://localhost:8000/ecocycle/api/login"
+
+    email = request.data.get('email')
+    password = request.data.get('password')
+    
+    data = { "email": email, "password": password }
+    response = requests.post(url, data=data)
+    
+    if response.status_code == 200:
+        case_id = iniciar_sesion_dep(request)
+        response_data = response.json()
+        response_data['case_id'] = case_id
+        return JsonResponse(response_data, status=status.HTTP_200_OK)
+    else:
+        return JsonResponse(response.json(), status=response.status_code)
