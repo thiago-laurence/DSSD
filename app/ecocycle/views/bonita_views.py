@@ -49,7 +49,7 @@ def get_bonita_tokens(request):
 
     if not tokens: # Si dio error la autenticación con bonita, devuelvo None
         return {}
-    
+
     headers = {
         "Cookie": f"JSESSIONID={tokens['JSESSIONID']}",
         "X-Bonita-API-Token": tokens['X-Bonita-API-Token'],
@@ -208,24 +208,33 @@ def iniciar_sesion_dep(request):
             url = f"http://localhost:8080/bonita/API/bpm/userTask/{task_id}/execution?assign=true"
             requests.post(url, headers=headers)
 
-            return case_id
+            datos_bonita = {
+                "case_id": case_id,
+                "Cookie": headers['Cookie'],
+                "X-Bonita-API-Token": headers['X-Bonita-API-Token']
+            }
+
+            return datos_bonita
         
 def fin_distribucion(request, ok):
-    headers = get_bonita_tokens(request) 
-    username = request.data.get("email").split('@')[0]
+    headers = {
+        "Cookie": request.headers.get('Cookie'),
+        "X-Bonita-API-Token": request.headers.get('X-Bonita-API-Token'),
+        "Content-Type": "application/json"
+    } 
 
     if headers:
         case_id = request.headers.get('X-Case-ID')
+        url = f"http://localhost:8080/bonita/API/bpm/archivedTask?p=0&c=10"
+        response = requests.get(url, headers=headers)
+        activities = response.json()
+        user_id = buscar_user_id(activities, case_id)
 
         # Le pego a la API de Bonita que obtiene la tarea (task)
         url = f"http://localhost:8080/bonita/API/bpm/task?p=0&c=10&f=caseId={case_id}" 
         response = requests.get(url, headers=headers)
         task_id = response.json()[0]['id'] # Este es el id de la tarea/task
-        # Le pego a la API de Bonita que obtiene el usuario
-        url = f"http://localhost:8080/bonita/API/identity/user?p=0&c=10&f=userName={username}" 
-        response_user = requests.get(url, headers=headers)
         
-        user_id = response_user.json()[0]['id']
         value = {
             "assigned_id": f"{user_id}", 
             "state": "ready",
@@ -242,3 +251,41 @@ def fin_distribucion(request, ok):
 
         url = f"http://localhost:8080/bonita/API/bpm/userTask/{task_id}/execution?assign=true"
         requests.post(url, headers=headers)
+    
+def aceptar_orden_dist(request):
+    headers = {
+        "Cookie": request.headers.get('Cookie'),
+        "X-Bonita-API-Token": request.headers.get('X-Bonita-API-Token'),
+        "Content-Type": "application/json"
+    } 
+
+    if headers:
+        case_id = request.headers.get('X-Case-ID')
+        url = f"http://localhost:8080/bonita/API/bpm/archivedTask?p=0&c=10"
+        response = requests.get(url, headers=headers)
+        activities = response.json()
+        user_id = buscar_user_id(activities, case_id)
+
+        # Le pego a la API de Bonita que obtiene la tarea (task)
+        url = f"http://localhost:8080/bonita/API/bpm/task?p=0&c=10&f=caseId={case_id}" 
+        response = requests.get(url, headers=headers)
+        task_id = response.json()[0]['id'] # Este es el id de la tarea/task
+        
+        value = {
+            "assigned_id": f"{user_id}", 
+            "state": "ready",
+            #"assign": "true"
+        }
+        
+        # Le pego a la API de Bonita que le asigna la task al usuario
+        url = f"http://localhost:8080/bonita/API/bpm/userTask/{task_id}" 
+        requests.put(url, headers=headers, data=json.dumps(value))
+
+        url = f"http://localhost:8080/bonita/API/bpm/userTask/{task_id}/execution?assign=true"
+        requests.post(url, headers=headers)
+
+def buscar_user_id(tasks, case_id):
+    for task in tasks:
+        if task['caseId'] == case_id:
+            if task['displayName'] == 'Iniciar sesion':
+                return task['assigned_id']

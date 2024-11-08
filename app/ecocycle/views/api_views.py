@@ -14,7 +14,7 @@ from ..models.material import Material
 from ..models.centro import Centro
 from ..serializers.centro import CentroSerializer
 from ..serializers.pedido import PedidoSerializer
-from ..views.bonita_views import iniciar_sesion_dep, fin_distribucion
+from ..views.bonita_views import iniciar_sesion_dep, fin_distribucion, aceptar_orden_dist
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -55,6 +55,7 @@ def add_pedido(request):
         fecha_solicitada=fecha_solicitada
     )
     serializer = PedidoSerializer(pedido)
+    aceptar_orden_dist(request)
 
     return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -120,9 +121,13 @@ def login_deposito(request):
     response = requests.post(url, data=data)
     
     if response.status_code == 200:
-        case_id = iniciar_sesion_dep(request)
+        datos_bonita = iniciar_sesion_dep(request)
         response_data = response.json()
-        response_data['case_id'] = case_id
+        print("type response_data", type(response_data))
+        response_data['case_id'] = datos_bonita['case_id']
+        response_data['Cookie'] = datos_bonita['Cookie']
+        response_data['X-Bonita-API-Token'] = datos_bonita['X-Bonita-API-Token']
+        print("type response_data", type(response_data))
         return JsonResponse(response_data, status=status.HTTP_200_OK)
     else:
         return JsonResponse(response.json(), status=response.status_code)
