@@ -1,12 +1,16 @@
 # syntax=docker/dockerfile:1
 FROM python:3.12
 
-WORKDIR /code
+COPY . /code/
 
-COPY requirements.txt /code/
+WORKDIR /code
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . /code/
+RUN chmod +x ./entrypoint.sh
 
-WORKDIR /code/app
+ENTRYPOINT ["./entrypoint.sh"]
+
+EXPOSE 8000
+
+CMD ["python", "manage.py", "runserver"]

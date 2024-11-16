@@ -1,3 +1,4 @@
+import random
 from decimal import Decimal
 from datetime import datetime
 from django.http import JsonResponse
@@ -101,3 +102,10 @@ def add_deposito(request):
         return JsonResponse({"error": "El email del deposito ya fue registrado."}, status=status.HTTP_409_CONFLICT)
     
     return JsonResponse({"message": 'El deposito fue registrado correctamente'}, status=status.HTTP_201_CREATED)
+
+@csrf_exempt
+@api_view(['POST'])
+def sorteo(request):
+    deposito_id = int(request.data.get('deposito_id'))
+    random_number = random.randint(1, 100)
+    return JsonResponse({"random_number": random_number}, status=status.HTTP_200_OK)
