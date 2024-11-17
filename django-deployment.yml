@@ -2,57 +2,47 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: django-deployment
-  namespace: default
+  name: django-app
   labels:
-    app: django
+    app: django-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: django
+      app: django-app
   template:
     metadata:
       labels:
-        app: django
+        app: django-app
     spec:
       containers:
-        - name: django
-          image: thiagolaurence/dssd-ecocycle-grupo1:v1
-          ports:
-            - containerPort: 8000
-          env:
-            - name: HOST
-              value: postgres-service
-            - name: PORT
-              value: "5432"
-            - name: DB_NAME
-              value: ecocycle
-            - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: postgres-user
-            - name: DB_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: postgres-password
-          resources:
-            limits:
-              memory: "128Mi"
-              cpu: "500m"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: django-service
-spec:
-  selector:
-    app: django
-  ports:
-    - name: django
-      protocol: TCP
-      port: 80
-      targetPort: 8000
-  type: ClusterIP
+      - name: django-container
+        image: thiagolaurence/dssd-ecocycle-grupo1:v3
+        ports:
+        - containerPort: 8000
+        env:
+          - name: HOST
+            value: postgres-service
+          - name: PORT
+            value: "5432"
+          - name: DB_NAME
+            value: ecocycle
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: postgres-user
+          - name: DB_PASS
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: postgres-password
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+
+# sudo microk8s kubectl port-forward svc/django-service 8000:8000

@@ -12,6 +12,7 @@ from ..models.deposito import Deposito
 from ..models.pedido import Pedido
 from ..models.material import Material
 from ..models.centro import Centro
+from ..models.sorteo import Sorteo
 from ..serializers.centro import CentroSerializer
 from ..serializers.pedido import PedidoSerializer
 
@@ -106,6 +107,17 @@ def add_deposito(request):
 @csrf_exempt
 @api_view(['POST'])
 def sorteo(request):
-    deposito_id = int(request.data.get('deposito_id'))
-    random_number = random.randint(1, 100)
-    return JsonResponse({"random_number": random_number}, status=status.HTTP_200_OK)
+    deposito = get_object_or_404(Deposito, id=request.data.get('deposito_id'))
+    max_value = 214748
+
+    existing_numbers = set(Sorteo.objects.values_list('numero', flat=True))
+    if Sorteo.objects.count() >= max_value:
+        return JsonResponse({"error": "No se pueden generar más sorteos."}, status=status.HTTP_400_BAD_REQUEST)
+    
+    random_number = random.randint(1, max_value)
+    while random_number in existing_numbers:
+        random_number = random.randint(1, max_value)
+
+    token = Sorteo.objects.create(fecha=datetime.now(), numero=random_number, deposito=deposito)
+
+    return JsonResponse({"deposito": deposito.id, "fecha": token.fecha, "numero": token.numero}, status=status.HTTP_200_OK)

@@ -13,6 +13,7 @@ from ecocycle.models.material import Material
 from ecocycle.models.pedido import Pedido
 from ecocycle.models.recoleccion_material import RecoleccionMaterial
 from ecocycle.models.centro_material import CentroMaterial
+from ecocycle.models.sorteo import Sorteo
 
 class Command(BaseCommand):
     help = 'Initializes the database with initial datasets'
@@ -40,6 +41,7 @@ class Command(BaseCommand):
         Punto.objects.all().delete()
         Centro.objects.all().delete()
         CustomUser.objects.all().delete()
+        Sorteo.objects.all().delete()
 
     def create_example_data(self):
         # Superusuario
@@ -67,7 +69,7 @@ class Command(BaseCommand):
         c2 = Centro.objects.create(nombre='Centro de acopio Albuquerque', direccion='308 Negra Arroyo Lane', password='123', email='centro2@example.com')
 
         # Depositos
-        d1 = Deposito.objects.create(nombre='Deposito 1', direccion='13 y 52', password='123', email='deposito1@example.com')
+        d1 = Deposito.objects.create(id=1, nombre='Deposito 1', direccion='13 y 52', password='123', email='deposito1@example.com')
 
         # Materiales
         m1 = Material.objects.create(nombre='Aluminio', precio=Decimal(0.5))
