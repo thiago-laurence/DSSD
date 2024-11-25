@@ -86,7 +86,9 @@
       </connections>
       <connections xmi:type="process:SequenceFlow" xmi:id="_mGsrEGxtEe-Q5OxDPa8kKg" name="No" target="_pwL6sGcREe-Mxodl10y14Q" source="_yX4uAGiKEe-9L9wmWmgVZg">
         <decisionTable xmi:type="decision:DecisionTable" xmi:id="_mGtSIGxtEe-Q5OxDPa8kKg"/>
-        <condition xmi:type="expression:Expression" xmi:id="_mGtSIWxtEe-Q5OxDPa8kKg" name="" content="" returnType="java.lang.Boolean" returnTypeFixed="true"/>
+        <condition xmi:type="expression:Expression" xmi:id="_mGtSIWxtEe-Q5OxDPa8kKg" name="newScript()" content="return ok != 'verdadero'" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Boolean" returnTypeFixed="true">
+          <referencedElements xmi:type="process:Data" xmi:id="_e0TAoKuIEe-Lzt3sfC2c3w" documentation="Si: Finaliza la recoleccion, procediendo a la entrega manual de los materiales.&#xA;No: Permite la nueva carga de recoleccion." name="ok" dataType="_CQVCEWcNEe-Mxodl10y14Q"/>
+        </condition>
       </connections>
       <connections xmi:type="process:SequenceFlow" xmi:id="_LITFwHFhEe-ec55t_izIaA" target="_haIJEHFhEe-ec55t_izIaA" source="_twjtgGxvEe-Q5OxDPa8kKg">
         <decisionTable xmi:type="decision:DecisionTable" xmi:id="_LIUT4HFhEe-ec55t_izIaA"/>
@@ -206,11 +208,11 @@
       </connections>
       <connections xmi:type="process:SequenceFlow" xmi:id="_JtBewGx4Ee-Q5OxDPa8kKg" name="Si" target="_u7qVEGx3Ee-Q5OxDPa8kKg" source="_HV2BcGx3Ee-Q5OxDPa8kKg">
         <decisionTable xmi:type="decision:DecisionTable" xmi:id="_JtBewWx4Ee-Q5OxDPa8kKg"/>
-        <condition xmi:type="expression:Expression" xmi:id="_JtBewmx4Ee-Q5OxDPa8kKg" name="return ok == 'verdadero'" content="return ok == 'verdadero'" returnType="java.lang.Boolean" returnTypeFixed="true"/>
+        <condition xmi:type="expression:Expression" xmi:id="_JtBewmx4Ee-Q5OxDPa8kKg" name="newScript()" content="return ok == 'verdadero'" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Boolean" returnTypeFixed="true"/>
       </connections>
       <connections xmi:type="process:SequenceFlow" xmi:id="_vAts0Gx6Ee-Q5OxDPa8kKg" name="No" target="_sSw40Gx6Ee-Q5OxDPa8kKg" source="_HV2BcGx3Ee-Q5OxDPa8kKg">
         <decisionTable xmi:type="decision:DecisionTable" xmi:id="_vAts0Wx6Ee-Q5OxDPa8kKg"/>
-        <condition xmi:type="expression:Expression" xmi:id="_vAts0mx6Ee-Q5OxDPa8kKg" name="return ok != 'verdadero'" content="return ok != 'verdadero'" returnType="java.lang.Boolean" returnTypeFixed="true"/>
+        <condition xmi:type="expression:Expression" xmi:id="_vAts0mx6Ee-Q5OxDPa8kKg" name="newScript()" content="return ok != 'verdadero'" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Boolean" returnTypeFixed="true"/>
       </connections>
       <connections xmi:type="process:SequenceFlow" xmi:id="_4en_cHFhEe-ec55t_izIaA" target="_BiYZUJ3gEe-988_FlWn_yQ" source="_4egDoHFhEe-ec55t_izIaA">
         <decisionTable xmi:type="decision:DecisionTable" xmi:id="_4en_cXFhEe-ec55t_izIaA"/>
@@ -218,7 +220,7 @@
       </connections>
       <connections xmi:type="process:SequenceFlow" xmi:id="_9dq5cHG7Ee-Sf6rpDrxBMQ" target="_BiYZUJ3gEe-988_FlWn_yQ" source="_u7qVEGx3Ee-Q5OxDPa8kKg">
         <decisionTable xmi:type="decision:DecisionTable" xmi:id="_9dwZAHG7Ee-Sf6rpDrxBMQ"/>
-        <condition xmi:type="expression:Expression" xmi:id="_9dxAEHG7Ee-Sf6rpDrxBMQ" name="" returnType="java.lang.Boolean" returnTypeFixed="true"/>
+        <condition xmi:type="expression:Expression" xmi:id="_9dxAEHG7Ee-Sf6rpDrxBMQ" name="" content="" returnType="java.lang.Boolean" returnTypeFixed="true"/>
       </connections>
       <actors xmi:type="process:Actor" xmi:id="_lO4w8Gx7Ee-Q5OxDPa8kKg" name="Actor1"/>
       <actors xmi:type="process:Actor" xmi:id="_196TAGx7Ee-Q5OxDPa8kKg" documentation="Persona que revisa los pedidos realizados por los depositos globales, los acepta y distribuye." name="Encargado de deposito comunitario"/>
