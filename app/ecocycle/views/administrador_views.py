@@ -35,13 +35,13 @@ def index(request):
     if id_material: 
         if Material.objects.filter(id=id_material).exists():
             context['mvp_material'] = Material.objects.filter(id=id_material).annotate(
-                total_materiales=Sum('materiales_recoleccion__cantidad_real'),
-                cantidad_recolecciones=Count('materiales_recoleccion', distinct=True)
+                total_materiales=Sum('recoleccionmaterial__cantidad_real'),
+                cantidad_recolecciones=Count('recoleccionmaterial', distinct=True)
             ).first()
         else: messages.error(request, "No existe el material seleccionado")
     else: context['mvp_material'] = Material.objects.annotate(
-                total_materiales=Sum('materiales_recoleccion__cantidad_real'),
-                cantidad_recolecciones=Count('materiales_recoleccion', distinct=True)
+                total_materiales=Sum('recoleccionmaterial__cantidad_real'),
+                cantidad_recolecciones=Count('recoleccionmaterial', distinct=True)
             ).filter(total_materiales__isnull=False).order_by('-total_materiales').first()
     
     result = Pedido.objects.aggregate(
