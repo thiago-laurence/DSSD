@@ -19,15 +19,15 @@ Enlace de sistema en producción sobre PaaS Render [Ecocycle](https://django-app
   - **Contraseña:** bpm
 
 - **Usuario con rol Centro:**
-  - **Email:** centro1@example.com
-  - **Contraseña:** 123
+  - **Email:** april.sanchez@example.com
+  - **Contraseña:** bpm
+ 
+- **Usuario con rol Deposito:**
+  - **Email:** misa.kumagai@example.com
+  - **Contraseña:** bpm
 
 - **Usuario con rol Administrador:**
   - **Email:** admin1@example.com
-  - **Contraseña:** 123
-  
-- **Usuario con rol Deposito:**
-  - **Email:** deposito1@example.com
   - **Contraseña:** 123
 
 ---
