@@ -6,10 +6,24 @@ services:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}
+    env_file:
+      - .env
     ports:
       - "5432:${PORT}"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+  web:
+    container_name: django_web
+    build: ./
+    volumes:
+      - ./:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+
 
 volumes:
   postgres_data:

@@ -2,6 +2,14 @@
 Bienvenido a la documentación de la API de EcoCycle. Aquí encontrarás toda la información necesaria para interactuar con nuestra aplicación.
 La misma es una aplicación web correspondiente al proyecto municipal "Ecocycle", el cual permite agrupar eslabones integrados en la economía circular, con el fin de promover el reciclado y actividades económicas sustentables entre los miembros de la comunidad.
 
+<center>
+    <img width="80" src="https://1000marcas.net/wp-content/uploads/2021/06/Django-Logo.png" alt="Django logo" />
+    <img width="80" src="https://avatars.githubusercontent.com/u/4619712?s=280&v=4" alt="BonitaSoft logo" />
+</center>
+
+
+| <img src="https://raw.githubusercontent.com/thiago-laurence/DSSD/refs/heads/main/app/ecocycle/static/img/logo.jpeg" alt="logo-ecocycle" width="100" /> | <img src="https://raw.githubusercontent.com/thiago-laurence/DSSD/refs/heads/main/app/ecocycle/static/img/home-page.png" alt="home" width="250" /> |
+|--------------|--------------|
 
 ## URL de Producción
 
@@ -34,11 +42,9 @@ Enlace de sistema en producción sobre PaaS Render [Ecocycle](https://django-app
 
 ¡Gracias por utilizar EcoCycle! Si tienes alguna pregunta, no dudes en contactarnos.
 
+## Ejecucion local
 
+El proyecto se encuentra dockerizado con sus respectivos servicios web Django y base de datos PostgreSQL.
 
-<center>
-    <img width="200" src="https://1000marcas.net/wp-content/uploads/2021/06/Django-Logo.png" alt="Django logo" />
-</center>
-<center>
-    <img width="200" src="https://es.bonitasoft.com/themes/bonitasoft2022/images/logo_bonitasoft.png" alt="BonitaSoft logo" />
-</center>
+    docker compose up -d --build
+
